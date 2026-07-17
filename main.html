@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phố Hóng — Tin tức nhanh hơn internet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Space+Grotesk:wght@500;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --paper: #F3E7C6;
+      --paper-dark: #E5D3A4;
+      --ink: #2A2016;
+      --night: #1B2A2E;
+      --night-2: #213A3B;
+      --chili: #DA4B2B;
+      --chili-dark: #B03A20;
+      --shutter: #1F8A70;
+      --shutter-dark: #166254;
+      --turmeric: #F0AE05;
+      --turmeric-dark: #C88B03;
+      --line: rgba(42, 32, 22, 0.18);
+      --shadow: 0 6px 0 rgba(42, 32, 22, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 15% 20%, rgba(240, 174, 5, 0.08), transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(218, 75, 43, 0.10), transparent 45%),
+        var(--night);
+      color: var(--ink);
+      font-family: 'Be Vietnam Pro', sans-serif;
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 18px 16px 60px;
+    }
+
+    /* ---------- top marquee ---------- */
+    .marquee {
+      color: var(--paper);
+      text-align: center;
+      padding: 14px 0 6px;
+    }
+
+    .marquee h1 {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      font-weight: 800;
+      font-size: clamp(28px, 5vw, 44px);
+      letter-spacing: 0.5px;
+      margin: 0;
+      color: var(--turmeric);
+      text-shadow: 2px 2px 0 var(--chili-dark);
+    }
+
+    .marquee p {
+      margin: 6px 0 0;
+      font-style: italic;
+      color: rgba(243, 231, 198, 0.75);
+      font-size: 14px;
+    }
+
+    /* ---------- setup screen ---------- */
+    .card {
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .setup {
+      max-width: 920px;
+      margin: 20px auto;
+      padding: 26px 26px 30px;
+    }
+
+    .setup h2 {
+      font-size: 22px;
+      margin: 0 0 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .setup .sub {
+      color: rgba(42, 32, 22, 0.65);
+      font-size: 13.5px;
+      margin: 0 0 18px;
+    }
+
+    .row-inline {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .pill-btn {
+      border: 2px solid var(--ink);
+      background: var(--paper);
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform .12s ease;
+    }
+
+    .pill-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .pill-btn.active {
+      background: var(--turmeric);
+    }
+
+    .player-setup {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      margin-bottom: 20px;
+    }
+
+    .player-box {
+      border: 2px dashed var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    .player-box label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      opacity: .7;
+    }
+
+    .player-box input[type=text] {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 2px solid var(--ink);
+      font-family: inherit;
+      font-size: 14px;
+      margin: 6px 0 10px;
+      background: #fff;
+    }
+
+    .char-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .char-chip {
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      padding: 6px 4px;
+      text-align: center;
+      cursor: pointer;
+      background: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .char-chip .em {
+      font-size: 20px;
+      display: block;
+    }
+
+    .char-chip.selected {
+      background: var(--shutter);
+      color: #fff;
+    }
+
+    .char-chip.taken {
+      opacity: .3;
+      cursor: not-allowed;
+    }
+
+    .start-btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: 2px solid var(--ink);
+      background: var(--chili);
+      color: #fff;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 0 var(--chili-dark);
+    }
+
+    .start-btn:hover {
+      transform: translateY(1px);
+      box-shadow: 0 3px 0 var(--chili-dark);
+    }
+
+    .start-btn:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    .rules-toggle {
+      font-size: 12.5px;
+      text-decoration: underline;
+      cursor: pointer;
+      opacity: .7;
+      user-select: none;
+    }
+
+    .rules-box {
+      margin-top: 12px;
+      font-size: 13px;
+      line-height: 1.6;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: none;
+    }
+
+    .rules-box.show {
+      display: block;
+    }
+
+    .rules-box b {
+      color: var(--chili-dark);
+    }
+
+    /* ---------- game layout ---------- */
+    .game {
+      display: none;
+      gap: 16px;
+    }
+
+    .game.show {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+    }
+
+    @media (max-width:980px) {
+      .game.show {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .board-outer {
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 10px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(11, 1fr);
+      grid-template-rows: repeat(11, 1fr);
+      gap: 3px;
+      aspect-ratio: 1/1;
+      width: 100%;
+    }
+
+    .tile {
+      border: 1.5px solid var(--ink);
+      border-radius: 6px;
+      background: #fff;
+      font-size: 9px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2px;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+    }
+
+    .tile .em {
+      font-size: 15px;
+    }
+
+    .tile .nm {
+      font-weight: 700;
+      font-size: 7.5px;
+      line-height: 1.05;
+      margin-top: 1px;
+    }
+
+    .tile.cat-drama {
+      background: #F7D9CC;
+    }
+
+    .tile.cat-market {
+      background: #D9F0DE;
+    }
+
+    .tile.cat-social {
+      background: #DCEFEC;
+    }
+
+    .tile.cat-penalty {
+      background: #F5DADA;
+    }
+
+    .tile.cat-rest {
+      background: #E4E9F5;
+    }
+
+    .tile.cat-start {
+      background: var(--turmeric);
+    }
+
+    .tile.cat-work {
+      background: #EFE2C8;
+    }
+
+    .tile.cat-minigame {
+      background: #F0E2F5;
+    }
+
+    .center-plaza {
+      grid-column: 2/11;
+      grid-row: 2/11;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background:
+        repeating-linear-gradient(45deg, rgba(31, 138, 112, 0.06) 0 12px, transparent 12px 24px),
+        var(--paper);
+      border: 1.5px dashed var(--line);
+      border-radius: 10px;
+      gap: 4px;
+    }
+
+    .center-plaza .title {
+      font-weight: 800;
+      font-size: clamp(22px, 3vw, 34px);
+      color: var(--chili);
+      text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+
+    .center-plaza .sub {
+      font-size: 12px;
+      opacity: .6;
+      font-style: italic;
+    }
+
+    .dice-area {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 6px;
+    }
+
+    .die {
+      width: 56px;
+      height: 56px;
+      background: #fff;
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 800;
+      box-shadow: 0 4px 0 var(--ink);
+    }
+
+    .die.rolling {
+      animation: wob .45s ease infinite;
+    }
+
+    @keyframes wob {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      25% {
+        transform: rotate(-12deg);
+      }
+
+      75% {
+        transform: rotate(12deg);
+      }
+
+      100% {
+        transform: rotate(0deg);
+      }
+    }
+
+    .roll-btn {
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: 2px solid var(--ink);
+      background: var(--shutter);
+      color: #fff;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 0 var(--shutter-dark);
+    }
+
+    .roll-btn:disabled {
+      opacity: .35;
+      cursor: not-allowed;
+    }
+
+    .roll-btn:hover:not(:disabled) {
+      transform: translateY(1px);
+      box-shadow: 0 3px 0 var(--shutter-dark);
+    }
+
+    .token {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border: 2px solid var(--ink);
+      bottom: 2px;
+      transition: all .4s ease;
+      box-shadow: 0 2px 0 rgba(0, 0, 0, .3);
+    }
+
+    /* ---------- sidebar ---------- */
+    .side {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .panel {
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 14px 16px;
+    }
+
+    .panel h3 {
+      margin: 0 0 10px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .turn-banner {
+      background: var(--night);
+      color: var(--paper);
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+    }
+
+    .turn-banner .em {
+      font-size: 26px;
+    }
+
+    .turn-banner small {
+      display: block;
+      font-weight: 400;
+      opacity: .7;
+      font-size: 11px;
+    }
+
+    .players-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .p-row {
+      display: grid;
+      grid-template-columns: 22px 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 2px solid var(--line);
+      background: rgba(255, 255, 255, 0.5);
+      font-size: 12.5px;
+    }
+
+    .p-row.current {
+      border-color: var(--chili);
+      background: rgba(240, 174, 5, 0.25);
+    }
+
+    .p-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--ink);
+    }
+
+    .p-stats {
+      display: flex;
+      gap: 8px;
+      font-family: 'Space Grotesk', monospace;
+      font-weight: 700;
+      font-size: 11.5px;
+      flex-wrap: wrap;
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn {
+      border: 2px solid var(--ink);
+      border-radius: 9px;
+      padding: 8px 12px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 12.5px;
+      cursor: pointer;
+      background: #fff;
+    }
+
+    .btn.primary {
+      background: var(--turmeric);
+    }
+
+    .btn.danger {
+      background: var(--chili);
+      color: #fff;
+    }
+
+    .btn.ghost {
+      background: transparent;
+    }
+
+    .btn:disabled {
+      opacity: .35;
+      cursor: not-allowed;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    .hand-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .hand-card {
+      border: 2px solid var(--ink);
+      border-radius: 9px;
+      padding: 6px 8px;
+      font-size: 10.5px;
+      background: #fff;
+      max-width: 120px;
+      cursor: pointer;
+    }
+
+    .hand-card b {
+      display: block;
+      font-size: 11px;
+    }
+
+    .log {
+      max-height: 220px;
+      overflow-y: auto;
+      font-size: 12px;
+      line-height: 1.55;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .log div {
+      border-bottom: 1px dashed var(--line);
+      padding: 3px 0;
+    }
+
+    /* ---------- modal ---------- */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 14, 8, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 16px;
+    }
+
+    .overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      border-radius: 16px;
+      max-width: 420px;
+      width: 100%;
+      padding: 22px;
+      box-shadow: 0 10px 0 rgba(0, 0, 0, 0.25);
+    }
+
+    .modal .em-big {
+      font-size: 40px;
+      text-align: center;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .modal h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    .modal p {
+      margin: 0 0 14px;
+      font-size: 13.5px;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .modal .quote {
+      font-style: italic;
+      font-size: 12px;
+      opacity: .65;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .modal .btns {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .footer-credit {
+      text-align: center;
+      color: rgba(243, 231, 198, 0.4);
+      font-size: 11px;
+      margin-top: 24px;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--paper-dark);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="marquee">
+      <h1>📻 PHỐ HÓNG</h1>
+      <p>"Tin tức nhanh hơn internet."</p>
+    </div>
+
+    <!-- ===================== SETUP ===================== -->
+    <div class="card setup" id="setupScreen">
+      <h2>🧧 Chuẩn bị ván chơi</h2>
+      <p class="sub">Chọn số người chơi, đặt tên và chọn nhân vật khu phố cho từng người.</p>
+
+      <label style="font-size:12px;font-weight:700;text-transform:uppercase;opacity:.7;">Số người chơi</label>
+      <div class="row-inline" id="numPlayersRow"></div>
+
+      <label style="font-size:12px;font-weight:700;text-transform:uppercase;opacity:.7;">Số vòng để kết thúc ván</label>
+      <div class="row-inline" id="lapsRow"></div>
+
+      <div class="player-setup" id="playerSetup"></div>
+
+      <button class="start-btn" id="startBtn" disabled>🎬 Bắt đầu Hóng!</button>
+
+      <div style="margin-top:14px;">
+        <span class="rules-toggle" id="rulesToggle">📖 Xem tóm tắt luật chơi</span>
+        <div class="rules-box" id="rulesBox">
+          <p><b>Mục tiêu:</b> Sau số vòng quy định (hoặc khi hết bài Drama), ai điểm cao nhất thắng.
+            Điểm = Tiền (x1) + Uy Tín (x3) + mỗi lá Quan Hệ còn giữ (x2).</p>
+          <p><b>Lượt chơi:</b> Tung xúc xắc → di chuyển → kích hoạt hiệu ứng ô dừng lại → có thể dùng
+            Kỹ Năng nhân vật (tối đa 1 lần/lượt) và mua đồ ở Cửa Hàng → kết thúc lượt.</p>
+          <p><b>Ô Drama 📢:</b> rút 1 lá Drama và thực hiện ngay, trừ khi bạn đang <b>miễn nhiễm Drama</b>
+            (nhờ nghỉ ở Khu Trọ / Quán Cơm) hoặc dùng lá Quan Hệ "Né Drama".</p>
+          <p><b>Quan Hệ:</b> giữ tối đa 5 lá, thừa phải bỏ bớt. Một số lá dùng 1 lần rồi bỏ.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== GAME ===================== -->
+    <div class="game" id="gameScreen">
+      <div class="board-outer">
+        <div class="board" id="board">
+          <div class="center-plaza">
+            <div class="title">PHỐ HÓNG</div>
+            <div class="sub">"Ai cũng biết mặt, ai cũng nợ một lần."</div>
+            <div class="dice-area">
+              <div class="die" id="die">🎲</div>
+              <button class="roll-btn" id="rollBtn">Tung xúc xắc</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side">
+        <div class="turn-banner" id="turnBanner"></div>
+
+        <div class="panel">
+          <h3>👥 Người chơi</h3>
+          <div class="players-list" id="playersList"></div>
+        </div>
+
+        <div class="panel">
+          <h3>🎮 Hành động</h3>
+          <div class="action-row">
+            <button class="btn primary" id="skillBtn">✨ Dùng Kỹ Năng</button>
+            <button class="btn" id="shopBtn">🛍️ Cửa Hàng</button>
+            <button class="btn danger" id="endTurnBtn" disabled>➡️ Kết thúc lượt</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>🎴 Túi Quan Hệ</h3>
+          <div class="hand-row" id="handRow"></div>
+        </div>
+
+        <div class="panel">
+          <h3>📰 Bản tin khu phố</h3>
+          <div class="log" id="log"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-credit">Phố Hóng — Board game trào phúng · phiên bản HTML tự chơi</div>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="modal" id="modal"></div>
+  </div>
+
+  <script>
+    /* ============================================================
+       DATA
+    ============================================================ */
+    const CHARACTERS = [
+      {
+        id: 'xeom', em: '🛵', name: 'Anh Xe Ôm',
+        passive: '+1 Tiền mỗi ô di chuyển.',
+        skillName: '"Anh biết đường tắt."', skillDesc: 'Di chuyển thêm 3 ô.',
+        quote: '"Anh chạy đường này 20 năm rồi."'
+      },
+      {
+        id: 'thoho', em: '👷', name: 'Thợ Hồ',
+        passive: 'Nhận thêm tiền khi dừng ở Công Trình.',
+        skillName: '"Tăng Ca Chủ Nhật"', skillDesc: 'Nhân đôi thu nhập đã kiếm được trong lượt này.',
+        quote: '"Kèo này thơm."'
+      },
+      {
+        id: 'cattoc', em: '💈', name: 'Thợ Cắt Tóc',
+        passive: 'Mỗi lượt của mình, nhận 1 Uy Tín.',
+        skillName: '"Fade Hàn Quốc"', skillDesc: 'Lấy 1 Uy Tín từ một người chơi khác.',
+        quote: '"Đầu này đảm bảo cua đổ."'
+      },
+      {
+        id: 'chutro', em: '🏠', name: 'Bà Chủ Trọ',
+        passive: 'Nhận 2 Tiền khi người khác dừng ở Khu Trọ.',
+        skillName: '"Tiền Điện Tháng Này Hơi Cao"', skillDesc: 'Thu 2 Tiền từ tất cả người chơi khác.',
+        quote: '"Cô tính đúng đồng hồ nha con."'
+      },
+      {
+        id: 'shipper', em: '📦', name: 'Anh Shipper',
+        passive: 'Nhận 2 Tiền nếu di chuyển từ 4 ô trở lên.',
+        skillName: '"Đơn Hỏa Tốc"', skillDesc: 'Được đi thêm 1 lượt ngay sau lượt này.',
+        quote: '"Ra lấy hàng giúp em."'
+      },
+      {
+        id: 'trada', em: '☕', name: 'Cô Trà Đá',
+        passive: 'Mỗi lượt của mình, nhận 1 lá Quan Hệ.',
+        skillName: '"Nghe Nói..."', skillDesc: 'Trừ 1 lá Quan Hệ của người chơi khác.',
+        quote: '"Tui không nhiều chuyện đâu nha."'
+      }
+    ];
+
+    // tile categories: start, penalty, minigame, drama, social, rest, service, market, work
+    const TILES = [
+      { name: 'KHỞI ĐẦU', em: '🏠', cat: 'start' },
+      { name: 'BỆNH VIỆN', em: '🏥', cat: 'penalty' },
+      { name: 'CÔNG AN PHƯỜNG', em: '🚓', cat: 'penalty' },
+      { name: 'Karaoke', em: '🎤', cat: 'minigame' },
+      { name: 'Tin Đồn', em: '📢', cat: 'drama' },
+      { name: 'Quán Nhậu', em: '🍻', cat: 'social' },
+      { name: 'Khu Trọ', em: '🛏️', cat: 'rest' },
+      { name: 'Chuyện Không Hay', em: '😮', cat: 'drama' },
+      { name: 'Tiệm Tóc', em: '💈', cat: 'service' },
+      { name: 'Quán Nước', em: '🍵', cat: 'social' },
+      { name: 'Góc Hóng Chuyện', em: '☕', cat: 'drama' },
+      { name: 'Chợ', em: '🛒', cat: 'market' },
+      { name: 'Bến Xe', em: '🚌', cat: 'service' },
+      { name: 'Khu Vực Nguy Hiểm', em: '🚧', cat: 'drama' },
+      { name: 'Công Trình', em: '🏗️', cat: 'work' },
+      { name: 'Quán Cơm Bình Dân', em: '🍚', cat: 'service' },
+      { name: 'Drama Khu Phố', em: '🐕', cat: 'drama' },
+      { name: 'Tiệm Tạp Hóa', em: '🏪', cat: 'penalty' },
+      { name: 'Chợ', em: '🛒', cat: 'market' },
+      { name: 'Có Chuyện Rồi', em: '👀', cat: 'drama' },
+      { name: 'Phố Đi Bộ', em: '🚸', cat: 'penalty' },
+      { name: 'Khu Trọ', em: '🛏️', cat: 'rest' },
+      { name: 'Tới Công Chuyện', em: '😮', cat: 'drama' },
+      { name: 'Quán Nhậu', em: '🍻', cat: 'social' },
+      { name: 'Tiệm Sửa Xe', em: '🔧', cat: 'penalty' },
+      { name: 'Biến Cố', em: '⚠️', cat: 'drama' },
+      { name: 'Quán Net', em: '🖥️', cat: 'service' },
+      { name: 'Chợ', em: '🛒', cat: 'market' },
+      { name: 'Ghế Đá Công Viên', em: '🪑', cat: 'drama' },
+      { name: 'Nhà Văn Hóa', em: '🏛️', cat: 'social' },
+      { name: 'Chợ', em: '🛒', cat: 'market' },
+      { name: 'Quán Nước', em: '🍵', cat: 'social' },
+      { name: 'Tiệm Tóc', em: '💈', cat: 'service' },
+      { name: 'Hóng Hớt', em: '👂', cat: 'drama' },
+      { name: 'Công Trình', em: '🏗️', cat: 'work' },
+      { name: 'Chợ Đêm', em: '🌙', cat: 'minigame' },
+      { name: 'Tin Đồn Đầu Hẻm', em: '📢', cat: 'drama' },
+      { name: 'Bến Xe', em: '🚌', cat: 'service' },
+      { name: 'Karaoke', em: '🎤', cat: 'minigame' },
+      { name: 'UBND PHƯỜNG', em: '🏢', cat: 'penalty' }
+    ];
+
+    const DRAMA_CARDS = [
+      {
+        em: '🛵', title: 'CÔNG AN TUÝT CÒI', desc: 'Chạy quá tốc độ.', quote: '"Tấp vô lề anh ơi."',
+        fx: (p) => { if (p.character.id === 'xeom' || p.character.id === 'shipper') { pay(p, 3); return `${p.name} bị phạt nguội, mất 3 Tiền.`; } return `${p.name} đi bộ, hên quá không dính.`; }
+      },
+      {
+        em: '😭', title: 'BỊ BÙNG KÈO', desc: 'Đến chỗ hẹn một mình.', quote: '"Anh chuyển khoản rồi đó."',
+        fx: (p) => { pay(p, 2); return `${p.name} bị bùng kèo, thất thu 2 Tiền.`; }
+      },
+      {
+        em: '📱', title: 'LÊN XU HƯỚNG', desc: 'Viral trên internet.', quote: '"Không hiểu sao tự nhiên nổi."',
+        fx: (p) => { gainUyTin(p, 3); return `${p.name} viral mạng xã hội, +3 Uy Tín.`; }
+      },
+      {
+        em: '🔊', title: 'KARAOKE 2H SÁNG', desc: 'Tiếp tục hát.', quote: '"Bài cuối thiệt."',
+        fx: (p) => { p.skipNextTurn = true; return `${p.name} hát tăng ca, mất lượt tiếp theo.`; }
+      },
+      {
+        em: '📺', title: 'LÊN THỜI SỰ', desc: 'Được đài phỏng vấn.', quote: '"Nổi tiếng bất đắc dĩ."',
+        fx: (p) => { gainUyTin(p, 5); return `${p.name} lên thời sự, +5 Uy Tín.`; }
+      },
+      {
+        em: '📢', title: 'HÀNG XÓM ĐỒN', desc: 'Bị nói xấu.', quote: '"Nghe nói vậy đó."',
+        fx: (p, g) => { const top = [...g.players].sort((a, b) => b.uytin - a.uytin)[0]; if (top) { top.uytin = Math.max(0, top.uytin - 2); return `${top.name} (nhiều Uy Tín nhất) mất 2 Uy Tín vì tin đồn.`; } return 'Không ai bị ảnh hưởng.'; }
+      },
+      {
+        em: '🗳️', title: 'HỌP TỔ DÂN PHỐ', desc: 'Khu phố mời đi họp.', quote: '"Đi họp đầy đủ nha."',
+        fx: (p, g) => { const idx = TILES.findIndex(t => t.name === 'Nhà Văn Hóa'); g.players.forEach(pl => pl.position = idx); return 'Tất cả mọi người bị triệu tập về Nhà Văn Hóa!'; }
+      },
+      {
+        em: '🏆', title: 'KHU PHỐ KHEN THƯỞNG', desc: 'Được tổ trưởng khen.', quote: '"Gia đình văn hóa."',
+        fx: (p) => { gainUyTin(p, 2); return `${p.name} được khen, +2 Uy Tín.`; }
+      },
+      {
+        em: '🌧️', title: 'TRIỀU CƯỜNG', desc: 'Nước dâng cao.', quote: '"Mưa có chút xíu."',
+        fx: (p, g) => { g.players.forEach(pl => pl.skipNextTurn = true); return 'Ngập hết khu phố! Mọi người đều mất lượt kế tiếp.'; }
+      },
+      {
+        em: '🐕', title: 'CHÓ THẢ RÔNG', desc: 'Bị đuổi.', quote: '"Nó không cắn đâu."',
+        fx: (p) => { p.position = (p.position - 3 + 40) % 40; return `${p.name} bị chó rượt, lùi 3 ô!`; }
+      },
+      {
+        em: '🧧', title: 'ĐÁM GIỖ', desc: 'Đám giỗ bà con.', quote: '"Ăn rồi hãy về."',
+        fx: (p) => { pay(p, 2); drawRelationship(p, 2); return `${p.name} đi đám giỗ: -2 Tiền, +2 lá Quan Hệ.`; }
+      },
+      {
+        em: '💍', title: 'ĐÁM CƯỚI', desc: 'Đám cưới cuối xóm.', quote: '"Đi phong bì chưa?"',
+        fx: (p) => { pay(p, 3); drawRelationship(p, 1); return `${p.name} đi đám cưới: -3 Tiền, +1 lá Quan Hệ.`; }
+      },
+      {
+        em: '💸', title: 'ĐƯỢC ĐỀN BÙ GIẢI TỎA', desc: 'Dô mánh.', quote: '"Tự nhiên giàu."',
+        fx: (p) => { p.money += 15; return `${p.name} trúng đền bù giải tỏa! +15 Tiền.`; }
+      },
+      {
+        em: '🏘️', title: 'TRÚNG QUY HOẠCH', desc: 'Dô mánh.', quote: '"Đất này có tương lai."',
+        fx: (p) => { p.money += 10; return `${p.name} trúng quy hoạch! +10 Tiền.`; }
+      }
+    ];
+
+    const RELATIONSHIP_CARDS = [
+      { id: 'onchu', em: '👴', title: 'Ông Chú Trong Phường', desc: 'Dùng 1 lần: Hủy mọi khoản phạt.', quote: '"Để chú gọi."' },
+      { id: 'khachhang', em: '🎫', title: 'Khách Hàng Thân Thiết', desc: 'Dùng 1 lần: Giảm giá đồ dùng ở Cửa Hàng -1 Tiền.', quote: '"Hẹn gặp lại quý khách."' },
+      { id: 'bannhau', em: '🍻', title: 'Bạn Nhậu Thân Thiết', desc: 'Dùng 1 lần: Rút ngay 1 lá Quan Hệ miễn phí.', quote: '"Anh em mình mà."' },
+      { id: 'chaygiay', em: '📄', title: 'Chạy Giấy Tờ', desc: 'Dùng 1 lần: Thoát khỏi hiệu ứng UBND Phường ngay lập tức.', quote: '"Tui gửi chú 500k cafe."' },
+      { id: 'xinviec', em: '💼', title: 'Xin Việc', desc: 'Dùng 1 lần: Trả thêm không cần, nhận ngay 3 Tiền.', quote: '"Để anh giới thiệu cho."' },
+      { id: 'nedrama', em: '🙈', title: 'Né Drama', desc: 'Dùng 1 lần: Hủy hiệu ứng của 1 lá Drama vừa rút.', quote: '"Sống hướng nội."' }
+    ];
+
+    const SHOP_ITEMS = [
+      { id: 'baga', em: '🚚', name: 'Xe Ba Gác', price: 15, desc: '+1 Tiền thu nhập đầu mỗi lượt.', vehicle: true, income: 1 },
+      { id: 'laptop', em: '💻', name: 'Laptop Trả Góp', price: 12, desc: '+2 Tiền thu nhập đầu mỗi lượt.', vehicle: false, income: 2 },
+      { id: 'phone', em: '📱', name: 'Điện Thoại Mới', price: 8, desc: 'Nhận ngay 1 lá Quan Hệ.', vehicle: false, income: 0 },
+      { id: 'wave', em: '🛵', name: 'Xe Wave Cũ', price: 5, desc: '+1 ô di chuyển mỗi lượt tung xúc xắc.', vehicle: true, income: 0, moveBonus: 1 }
+    ];
+
+    const PLAYER_COLORS = ['#DA4B2B', '#1F8A70', '#2E5FA3', '#B8860B', '#7A4FA3', '#C2185B'];
+
+    /* ============================================================
+       STATE
+    ============================================================ */
+    let numPlayers = 2;
+    let laps = 3;
+    let selectedChars = {}; // playerIndex -> charId
+    let game = null;
+
+    /* ============================================================
+       SETUP SCREEN
+    ============================================================ */
+    function buildSetupControls() {
+      const npRow = document.getElementById('numPlayersRow');
+      npRow.innerHTML = '';
+      [2, 3, 4].forEach(n => {
+        const b = document.createElement('button');
+        b.className = 'pill-btn' + (n === numPlayers ? ' active' : '');
+        b.textContent = n + ' người';
+        b.onclick = () => { numPlayers = n; renderPlayerSetup(); buildSetupControls(); };
+        npRow.appendChild(b);
+      });
+      const lapRow = document.getElementById('lapsRow');
+      lapRow.innerHTML = '';
+      [2, 3, 4].forEach(n => {
+        const b = document.createElement('button');
+        b.className = 'pill-btn' + (n === laps ? ' active' : '');
+        b.textContent = n + ' vòng';
+        b.onclick = () => { laps = n; buildSetupControls(); };
+        lapRow.appendChild(b);
+      });
+    }
+
+    function renderPlayerSetup() {
+      const box = document.getElementById('playerSetup');
+      box.innerHTML = '';
+      for (let i = 0; i < numPlayers; i++) {
+        if (!(i in selectedChars)) selectedChars[i] = null;
+        const div = document.createElement('div');
+        div.className = 'player-box';
+        div.innerHTML = `
+      <label>Người chơi ${i + 1}</label>
+      <input type="text" id="pname${i}" placeholder="Tên (vd: ${['Tí', 'Beo', 'Lụm', 'Na', 'Sún', 'Mập'][i] || 'Người chơi ' + (i + 1)}">
+      <label>Chọn nhân vật</label>
+      <div class="char-grid" id="charGrid${i}"></div>
+    `;
+        box.appendChild(div);
+        const grid = div.querySelector('#charGrid' + i);
+        CHARACTERS.forEach(c => {
+          const chip = document.createElement('div');
+          chip.className = 'char-chip';
+          chip.innerHTML = `<span class="em">${c.em}</span>${c.name}`;
+          chip.onclick = () => {
+            const takenElsewhere = Object.entries(selectedChars).some(([k, v]) => +k !== i && v === c.id);
+            if (takenElsewhere) return;
+            selectedChars[i] = c.id;
+            renderPlayerSetup();
+          };
+          grid.appendChild(chip);
+        });
+        updateCharGrid(i, grid);
+      }
+      checkStartReady();
+    }
+
+    function updateCharGrid(i, grid) {
+      const chips = grid.querySelectorAll('.char-chip');
+      CHARACTERS.forEach((c, idx) => {
+        const chip = chips[idx];
+        chip.classList.remove('selected', 'taken');
+        if (selectedChars[i] === c.id) chip.classList.add('selected');
+        const takenElsewhere = Object.entries(selectedChars).some(([k, v]) => +k !== i && v === c.id);
+        if (takenElsewhere) chip.classList.add('taken');
+      });
+    }
+
+    function checkStartReady() {
+      let ready = true;
+      for (let i = 0; i < numPlayers; i++) { if (!selectedChars[i]) ready = false; }
+      document.getElementById('startBtn').disabled = !ready;
+    }
+
+    document.getElementById('rulesToggle').onclick = () => {
+      document.getElementById('rulesBox').classList.toggle('show');
+    };
+
+    document.getElementById('startBtn').onclick = startGame;
+
+    buildSetupControls();
+    renderPlayerSetup();
+
+    /* re-render char grids on selection change to update disabled states */
+    const origRenderPlayerSetup = renderPlayerSetup;
+
+    /* ============================================================
+       GAME INIT
+    ============================================================ */
+    function startGame() {
+      const players = [];
+      for (let i = 0; i < numPlayers; i++) {
+        const name = document.getElementById('pname' + i).value.trim() || ('Người chơi ' + (i + 1));
+        const character = CHARACTERS.find(c => c.id === selectedChars[i]);
+        players.push({
+          id: i, name, character, color: PLAYER_COLORS[i % PLAYER_COLORS.length],
+          money: 10, uytin: 0, relationships: [], items: [],
+          position: 0, laps: 0, skillUsed: false, immuneNextDrama: false,
+          skipNextTurn: false, extraTurn: false, turnIncome: 0
+        });
+        // starting 1 relationship card
+        players[i].relationships.push(randomRelationshipCard());
+      }
+      game = {
+        players,
+        current: 0,
+        dramaDeck: shuffledDramaDeck(),
+        gameOver: false,
+        round: 0,
+        turnPhase: 'roll'
+      };
+
+      applyTurnStartPassives(game.players[0]);
+      document.getElementById('setupScreen').style.display = 'none';
+      document.getElementById('gameScreen').classList.add('show');
+      buildBoardDom();
+      logMsg('🎬 Ván chơi bắt đầu! Chúc mọi người hóng vui vẻ.');
+      renderAll();
+    }
+
+    function shuffledDramaDeck() {
+      const deck = [];
+      DRAMA_CARDS.forEach(c => { deck.push(c); deck.push(c); }); // two copies each like physical deck
+      for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[deck[i], deck[j]] = [deck[j], deck[i]]; }
+      return deck;
+    }
+    function randomRelationshipCard() {
+      return { ...RELATIONSHIP_CARDS[Math.floor(Math.random() * RELATIONSHIP_CARDS.length)], uid: Math.random().toString(36).slice(2) };
+    }
+
+    /* ============================================================
+       BOARD DOM
+    ============================================================ */
+    function tilePos(i) {
+      if (i <= 10) return { col: 11 - i, row: 11 };
+      if (i <= 20) return { col: 1, row: 11 - (i - 10) };
+      if (i <= 30) return { col: 1 + (i - 20), row: 1 };
+      return { col: 11, row: 1 + (i - 30) };
+    }
+    function buildBoardDom() {
+      const board = document.getElementById('board');
+      // remove old tiles (keep center-plaza)
+      [...board.querySelectorAll('.tile')].forEach(e => e.remove());
+      TILES.forEach((t, i) => {
+        const pos = tilePos(i);
+        const el = document.createElement('div');
+        el.className = 'tile cat-' + t.cat;
+        el.style.gridColumn = pos.col;
+        el.style.gridRow = pos.row;
+        el.id = 'tile' + i;
+        el.innerHTML = `<div class="em">${t.em}</div><div class="nm">${t.name}</div>`;
+        board.appendChild(el);
+      });
+    }
+    function renderTokens() {
+      document.querySelectorAll('.token').forEach(e => e.remove());
+      game.players.forEach((p, idx) => {
+        const tile = document.getElementById('tile' + p.position);
+        if (!tile) return;
+        const tok = document.createElement('div');
+        tok.className = 'token';
+        tok.style.background = p.color;
+        tok.style.left = (6 + idx * 15) + 'px';
+        tile.appendChild(tok);
+      });
+    }
+
+    /* ============================================================
+       RENDER SIDEBAR
+    ============================================================ */
+    function renderAll() {
+      renderTokens();
+      renderTurnBanner();
+      renderPlayersList();
+      renderHand();
+      const rollBtn = document.getElementById('rollBtn');
+      const endBtn = document.getElementById('endTurnBtn');
+      rollBtn.disabled = game.turnPhase !== 'roll';
+      endBtn.disabled = game.turnPhase !== 'end';
+      document.getElementById('skillBtn').disabled =
+        game.turnPhase !== 'post';
+    }
+    function renderTurnBanner() {
+      const p = game.players[game.current];
+      const b = document.getElementById('turnBanner');
+      b.innerHTML = `<span class="em">${p.character.em}</span><span>Lượt của ${p.name}<small>${p.character.name} — Vòng ${p.laps + 1}/${laps}</small></span>`;
+      b.style.background = 'linear-gradient(135deg, var(--night), ' + p.color + '55)';
+    }
+    function renderPlayersList() {
+      const box = document.getElementById('playersList');
+      box.innerHTML = '';
+      game.players.forEach((p, idx) => {
+        const row = document.createElement('div');
+        row.className = 'p-row' + (idx === game.current ? ' current' : '');
+        row.innerHTML = `
+      <div class="p-dot" style="background:${p.color}"></div>
+      <div>${p.character.em} ${p.name}${p.skipNextTurn ? ' 😴' : ''}${p.immuneNextDrama ? ' 🛡️' : ''}
+        <div class="p-stats">
+          <span>💰${p.money}</span><span>⭐${p.uytin}</span><span>🎴${p.relationships.length}</span>
+        </div>
+      </div>
+      <div style="font-size:10px;opacity:.6;">${p.items.map(it => it.em).join(' ')}</div>
+    `;
+        box.appendChild(row);
+      });
+    }
+    function renderHand() {
+      const box = document.getElementById('handRow');
+      box.innerHTML = '';
+      const p = game.players[game.current];
+      if (p.relationships.length === 0) { box.innerHTML = '<span style="font-size:12px;opacity:.6;">Chưa có lá Quan Hệ nào.</span>'; return; }
+      p.relationships.forEach(card => {
+        const el = document.createElement('div');
+        el.className = 'hand-card';
+        el.innerHTML = `<b>${card.em} ${card.title}</b>${card.desc}`;
+        el.title = 'Bấm để dùng lá này (nếu hợp lệ ngoài hiệu ứng tự động)';
+        el.onclick = () => tryManualUseCard(p, card);
+        box.appendChild(el);
+      });
+    }
+
+    function logMsg(msg) {
+      const log = document.getElementById('log');
+      const d = document.createElement('div');
+      d.textContent = msg;
+      log.appendChild(d);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    /* ============================================================
+       MODAL SYSTEM (promise based)
+    ============================================================ */
+    function showModal({ em, title, desc, quote, buttons }) {
+      return new Promise(resolve => {
+        const overlay = document.getElementById('overlay');
+        const modal = document.getElementById('modal');
+        modal.innerHTML = `
+      ${em ? `<span class="em-big">${em}</span>` : ''}
+      <h3>${title}</h3>
+      ${desc ? `<p>${desc}</p>` : ''}
+      ${quote ? `<div class="quote">${quote}</div>` : ''}
+      <div class="btns" id="modalBtns"></div>
+    `;
+        const btnBox = modal.querySelector('#modalBtns');
+        buttons.forEach(b => {
+          const btn = document.createElement('button');
+          btn.className = 'btn' + (b.primary ? ' primary' : '');
+          btn.textContent = b.label;
+          btn.onclick = () => { overlay.classList.remove('show'); resolve(b.value); };
+          btnBox.appendChild(btn);
+        });
+        overlay.classList.add('show');
+      });
+    }
+    function alertModal(em, title, desc, quote) {
+      return showModal({ em, title, desc, quote, buttons: [{ label: 'OK, hiểu rồi', value: true, primary: true }] });
+    }
+
+    /* ============================================================
+       ECONOMY HELPERS
+    ============================================================ */
+    function pay(p, amt) { p.money = Math.max(0, p.money - amt); }
+    function gainUyTin(p, amt) { p.uytin = Math.max(0, p.uytin + amt); }
+    function drawRelationship(p, n = 1) {
+      for (let i = 0; i < n; i++) p.relationships.push(randomRelationshipCard());
+    }
+    function findByCharacter(id) { return game.players.find(pl => pl.character.id === id); }
+    function hasVehicle(p) { return p.items.some(it => it.vehicle); }
+
+    async function enforceHandLimit(p) {
+      while (p.relationships.length > 5) {
+        const choice = await showModal({
+          em: '🎴', title: 'Túi Quan Hệ đầy!',
+          desc: `${p.name} đang giữ ${p.relationships.length} lá, tối đa 5. Chọn 1 lá để bỏ.`,
+          buttons: p.relationships.map((c, i) => ({ label: `${c.em} ${c.title}`, value: i }))
+        });
+        p.relationships.splice(choice, 1);
+      }
+    }
+
+    async function checkCancelPenalty(p, penaltyLabel) {
+      const has = p.relationships.find(c => c.id === 'onchu');
+      if (!has) return false;
+      const use = await showModal({
+        em: '👴', title: 'Dùng "Ông Chú Trong Phường"?',
+        desc: `Bạn có thể hủy khoản phạt "${penaltyLabel}" bằng lá này.`,
+        quote: '"Để chú gọi."',
+        buttons: [{ label: 'Dùng lá này', value: true, primary: true }, { label: 'Không, chịu phạt', value: false }]
+      });
+      if (use) {
+        p.relationships.splice(p.relationships.indexOf(has), 1);
+        logMsg(`${p.name} dùng "Ông Chú Trong Phường" để hủy khoản phạt.`);
+        return true;
+      }
+      return false;
+    }
+
+    function tryManualUseCard(p, card) {
+      logMsg(`ℹ️ Lá "${card.title}" sẽ tự động được đề nghị dùng khi tình huống phù hợp xảy ra (vd: gặp phạt, rút Drama, UBND).`);
+    }
+
+    /* ============================================================
+       TURN FLOW
+    ============================================================ */
+    document.getElementById('rollBtn').onclick = doRoll;
+    document.getElementById('endTurnBtn').onclick = endTurn;
+    document.getElementById('skillBtn').onclick = useSkill;
+    document.getElementById('shopBtn').onclick = openShop;
+
+    game_setInitialPhase();
+    function game_setInitialPhase() { /* placeholder, actual set after startGame */ }
+
+    async function doRoll() {
+      if (!game || game.turnPhase !== 'roll') return;
+      const p = game.players[game.current];
+      document.getElementById('rollBtn').disabled = true;
+      const die = document.getElementById('die');
+      die.classList.add('rolling');
+      let ticks = 0;
+      const iv = setInterval(() => { die.textContent = faceEm(1 + Math.floor(Math.random() * 6)); ticks++; }, 70);
+      await new Promise(r => setTimeout(r, 650));
+      clearInterval(iv);
+      die.classList.remove('rolling');
+      const roll = 1 + Math.floor(Math.random() * 6);
+      die.textContent = faceEm(roll);
+      logMsg(`🎲 ${p.name} tung được ${roll}.`);
+
+      let steps = roll + (p.items.find(it => it.moveBonus) ? p.items.find(it => it.moveBonus).moveBonus : 0);
+      p.turnIncome = 0;
+      await moveToken(p, steps, roll);
+
+      await landOnTile(p);
+      await enforceHandLimit(p);
+
+      game.turnPhase = 'end';
+      document.getElementById('skillBtn').disabled = false;
+      document.getElementById('endTurnBtn').disabled = false;
+      renderAll();
+    }
+
+    function faceEm(n) { return ['', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][n]; }
+
+    async function moveToken(p, steps, diceRoll) {
+      const start = p.position;
+      const raw = start + steps;
+      const wraps = Math.floor(raw / 40);
+      if (wraps > 0) {
+        p.money += 3 * wraps; p.turnIncome += 3 * wraps; p.laps += wraps;
+        logMsg(`🏠 ${p.name} đi qua Khởi Đầu, nhận ${3 * wraps} Tiền. (Vòng ${p.laps})`);
+      }
+      p.position = raw % 40;
+      renderTokens();
+      await new Promise(r => setTimeout(r, 350));
+
+      // character passives tied to movement
+      if (p.character.id === 'xeom') {
+        const gained = Math.floor(steps / 3);
+
+        if (gained > 0) {
+          p.money += gained;
+          p.turnIncome += gained;
+
+          logMsg(`🛵 Nội tại Anh Xe Ôm: +${gained} Tiền (di chuyển ${steps} ô).`);
+        }
+      }
+      if (p.character.id === 'shipper' && diceRoll >= 4) {
+        p.money += 2; p.turnIncome += 2;
+        logMsg(`📦 Nội tại Anh Shipper: đi xa (${diceRoll} ô), +2 Tiền.`);
+      }
+
+      checkLapEnd(p);
+    }
+
+    function checkLapEnd(p) {
+      if (p.laps >= laps && !game.gameOver) {
+        game.gameOver = true;
+      }
+    }
+
+    async function landOnTile(p) {
+      const tile = TILES[p.position];
+      logMsg(`📍 ${p.name} dừng tại "${tile.name}".`);
+      await runTileEffect(p, tile);
+    }
+
+    /* ============================================================
+       TILE EFFECTS
+    ============================================================ */
+    async function runTileEffect(p, tile) {
+      switch (tile.name) {
+        case 'KHỞI ĐẦU': break; // handled in movement
+        case 'BỆNH VIỆN': {
+          const label = 'Viện phí 3 Tiền';
+          if (await checkCancelPenalty(p, label)) break;
+          if (p.money >= 3) { pay(p, 3); logMsg(`🏥 ${p.name} trả viện phí 3 Tiền.`); }
+          else { p.skipNextTurn = true; logMsg(`🏥 ${p.name} không đủ tiền viện phí, mất lượt tiếp theo.`); }
+          break;
+        }
+        case 'CÔNG AN PHƯỜNG': {
+          const label = 'Phạt Công An (3 Uy Tín, 5 Tiền)';
+          if (await checkCancelPenalty(p, label)) break;
+          p.uytin = Math.max(0, p.uytin - 3); pay(p, 5);
+          logMsg(`🚓 ${p.name} bị công an mời hợp tác: -3 Uy Tín, -5 Tiền.`);
+          break;
+        }
+        case 'UBND PHƯỜNG': {
+          const chayGiay = p.relationships.find(c => c.id === 'chaygiay');
+          if (chayGiay) {
+            const use = await showModal({
+              em: '📄', title: 'Dùng "Chạy Giấy Tờ"?', desc: 'Thoát khỏi thủ tục UBND ngay lập tức.', quote: '"Tui gửi chú 500k cafe."',
+              buttons: [{ label: 'Dùng lá này', value: true, primary: true }, { label: 'Không dùng', value: false }]
+            });
+            if (use) { p.relationships.splice(p.relationships.indexOf(chayGiay), 1); logMsg(`📄 ${p.name} dùng "Chạy Giấy Tờ", thoát UBND không tốn gì.`); break; }
+          }
+          const choice = await showModal({
+            em: '🏢', title: 'UBND PHƯỜNG', desc: '"Thiếu một bản photo công chứng." Bạn muốn mất lượt kế tiếp hay trả 3 Tiền?',
+            buttons: [{ label: '😴 Mất lượt kế tiếp', value: 'skip' }, { label: '💸 Trả 3 Tiền', value: 'pay', primary: true }]
+          });
+          if (choice === 'pay') { pay(p, 3); logMsg(`🏢 ${p.name} trả 3 Tiền để xong việc.`); }
+          else { p.skipNextTurn = true; logMsg(`🏢 ${p.name} chấp nhận mất lượt kế tiếp.`); }
+          break;
+        }
+        case 'Karaoke': {
+          const sub = 1 + Math.floor(Math.random() * 6);
+          logMsg(`🎤 ${p.name} tung xúc xắc phụ tại Karaoke: ${sub}.`);
+          if (sub <= 3) { pay(p, 2); logMsg(`🎤 Hát dở quá, -2 Tiền tiền phòng.`); }
+          else { drawRelationship(p, 1); logMsg(`🎤 Cả nhóm quẩy tới bến, +1 lá Quan Hệ.`); }
+          break;
+        }
+        case 'Chợ Đêm': {
+          const sub = 1 + Math.floor(Math.random() * 6);
+          logMsg(`🌙 ${p.name} tung xúc xắc phụ tại Chợ Đêm: ${sub}.`);
+          if (sub <= 2) { logMsg('🌙 Ế quá, không bán được gì.'); }
+          else if (sub <= 4) { p.money += 2; logMsg('🌙 Bán cũng được, +2 Tiền.'); }
+          else { p.money += 4; logMsg('🌙 Đắt hàng dữ dội, +4 Tiền.'); }
+          break;
+        }
+        case 'Quán Nhậu': {
+          drawRelationship(p, 1);
+          logMsg(`🍻 "Tăng hai ba dô." +1 lá Quan Hệ.`);
+          break;
+        }
+        case 'Khu Trọ': {
+          p.immuneNextDrama = true;
+          logMsg(`🛏️ ${p.name} nghỉ ngơi ở Khu Trọ — miễn nhiễm Drama tiếp theo.`);
+          const landlord = findByCharacter('chutro');
+          if (landlord && landlord.id !== p.id) { landlord.money += 2; logMsg(`🏠 Bà Chủ Trọ (${landlord.name}) thu 2 Tiền tiền phòng.`); }
+          break;
+        }
+        case 'Tiệm Tóc': {
+          if (p.character.id === 'cattoc') { p.money += 2; logMsg(`💈 ${p.name} tự cắt tóc cho khách, +2 Tiền.`); }
+          else {
+            const barber = findByCharacter('cattoc');
+            if (barber && barber.id !== p.id) { pay(p, 1); barber.money += 1; logMsg(`💈 ${p.name} trả 1 Tiền cắt tóc cho ${barber.name}.`); }
+          }
+          break;
+        }
+        case 'Quán Nước': {
+          const icetea = findByCharacter('trada');
+          if (icetea && icetea.id !== p.id) { pay(p, 3); icetea.money += 3; logMsg(`💈 ${p.name} trả 3 Tiền nước cho ${icetea.name}.`); }
+
+          drawRelationship(p, 1);
+          logMsg(`🍵 "Ngồi 5 phút biết hết chuyện trong xóm." +1 lá Quan Hệ.`);
+          break;
+        }
+        case 'Chợ': {
+          p.money += 2; p.turnIncome += 2;
+          logMsg(`🛒 "Bán đắt như tôm tươi." +2 Tiền.`);
+          break;
+        }
+        case 'Bến Xe': {
+          if (p.character.id === 'xeom') { p.money += 3; p.turnIncome += 3; logMsg(`🚌 ${p.name} đón khách ngay bến, +3 Tiền.`); }
+          else { pay(p, 1); logMsg(`🚌 ${p.name} trả phí gửi xe, -1 Tiền.`); }
+          break;
+        }
+        case 'Công Trình': {
+          if (p.character.id === 'thoho') { p.money += 3; p.turnIncome += 3; logMsg(`🏗️ Thợ Hồ ${p.name} tăng ca, +3 Tiền.`); }
+          else { p.money += 1; p.turnIncome += 1; logMsg(`🏗️ ${p.name} phụ hồ vặt, +1 Tiền.`); }
+          break;
+        }
+        case 'Quán Cơm Bình Dân': {
+          pay(p, 2); p.immuneNextDrama = true;
+          logMsg(`🍚 "Cơm thêm không em?" -2 Tiền, miễn nhiễm Drama tiếp theo.`);
+          break;
+        }
+        case 'Tiệm Tạp Hóa': {
+          if (p.money >= 1) { pay(p, 1); logMsg(`🏪 ${p.name} mua đồ vặt, -1 Tiền.`); }
+          else { p.uytin = Math.max(0, p.uytin - 2); logMsg(`🏪 ${p.name} không đủ tiền, ghi nợ mất mặt: -2 Uy Tín.`); }
+          break;
+        }
+        case 'Phố Đi Bộ': {
+          if (hasVehicle(p)) { pay(p, 3); logMsg(`🚸 "Cấm phương tiện." ${p.name} chạy xe vào, bị phạt 3 Tiền.`); }
+          else { logMsg(`🚸 ${p.name} đi bộ dạo phố, không sao cả.`); }
+          break;
+        }
+        case 'Tiệm Sửa Xe': {
+          if (hasVehicle(p)) { pay(p, 1); logMsg(`🔧 ${p.name} tốn 1 Tiền sửa xe.`); }
+          else { logMsg(`🔧 ${p.name} không có xe, khỏi sửa.`); }
+          break;
+        }
+        case 'Quán Net': {
+          gainUyTin(p, 2);
+          logMsg(`🖥️ "Top 1 server." Clip lên xu hướng, +2 Uy Tín.`);
+          break;
+        }
+        case 'Nhà Văn Hóa': {
+          drawRelationship(p, 1);
+          logMsg(`🏛️ "Đi họp cũng có cái lợi." +1 lá Quan Hệ.`);
+          break;
+        }
+        default:
+          if (tile.cat === 'drama') { await triggerDrama(p); }
+      }
+    }
+
+    async function triggerDrama(p) {
+      if (p.immuneNextDrama) {
+        p.immuneNextDrama = false;
+        logMsg(`🛡️ ${p.name} đang miễn nhiễm Drama, hiệu ứng bị vô hiệu hóa.`);
+        return;
+      }
+      if (game.dramaDeck.length === 0) {
+        logMsg('📢 Bộ bài Drama đã hết!');
+        game.gameOver = true;
+        return;
+      }
+      const card = game.dramaDeck.pop();
+      const nedrama = p.relationships.find(c => c.id === 'nedrama');
+      if (nedrama) {
+        const use = await showModal({
+          em: '🙈', title: `Rút phải: ${card.title}`,
+          desc: `${card.em} ${card.desc} — Bạn có muốn dùng lá "Né Drama" để hủy?`, quote: '"Sống hướng nội."',
+          buttons: [{ label: 'Dùng lá này để né', value: true, primary: true }, { label: 'Chịu trận', value: false }]
+        });
+        if (use) {
+          p.relationships.splice(p.relationships.indexOf(nedrama), 1);
+          logMsg(`🙈 ${p.name} dùng "Né Drama" để hủy "${card.title}".`);
+          return;
+        }
+      }
+      await alertModal(card.em, card.title, card.desc, card.quote);
+      const resultMsg = card.fx(p, game);
+      logMsg(`📢 ${resultMsg}`);
+    }
+
+    /* ============================================================
+       SKILLS
+    ============================================================ */
+    async function useSkill() {
+      const p = game.players[game.current];
+      if (p.skillUsed) { logMsg(`✋ ${p.name} đã dùng kỹ năng trong lượt này rồi.`); return; }
+      const ok = await showModal({
+        em: p.character.em, title: p.character.skillName, desc: p.character.skillDesc,
+        quote: 'Xác nhận sử dụng kỹ năng nhân vật?',
+        buttons: [{ label: 'Dùng ngay', value: true, primary: true }, { label: 'Để sau', value: false }]
+      });
+      if (!ok) return;
+      p.skillUsed = true;
+
+      switch (p.character.id) {
+        case 'xeom': {
+          logMsg(`🛵 ${p.name} dùng "Anh biết đường tắt": di chuyển thêm 3 ô!`);
+          await moveToken(p, 3, 3);
+          await landOnTile(p);
+          break;
+        }
+        case 'thoho': {
+          const bonus = p.turnIncome;
+          p.money += bonus;
+          logMsg(`👷 ${p.name} dùng "Tăng Ca Chủ Nhật": nhân đôi thu nhập lượt này, +${bonus} Tiền thêm.`);
+          break;
+        }
+        case 'cattoc': {
+          const targets = game.players.filter(pl => pl.id !== p.id && pl.uytin > 0);
+          if (targets.length === 0) { logMsg('💈 Không có ai còn Uy Tín để lấy.'); break; }
+          const choice = await showModal({
+            em: '💈', title: 'Fade Hàn Quốc', desc: 'Chọn người để lấy 1 Uy Tín.',
+            buttons: targets.map(t => ({ label: `${t.character.em} ${t.name} (⭐${t.uytin})`, value: t.id }))
+          });
+          const target = game.players.find(pl => pl.id === choice);
+          target.uytin -= 1; p.uytin += 1;
+          logMsg(`💈 ${p.name} "fade" lấy 1 Uy Tín từ ${target.name}.`);
+          break;
+        }
+        case 'chutro': {
+          let total = 0;
+          game.players.forEach(pl => { if (pl.id !== p.id) { const amt = Math.min(2, pl.money); pl.money -= amt; total += amt; } });
+          p.money += total;
+          logMsg(`🏠 ${p.name} dùng "Tiền Điện Tháng Này Hơi Cao": thu tổng ${total} Tiền từ mọi người.`);
+          break;
+        }
+        case 'shipper': {
+          p.extraTurn = true;
+          logMsg(`📦 ${p.name} dùng "Đơn Hỏa Tốc": sẽ được đi thêm 1 lượt!`);
+          break;
+        }
+        case 'trada': {
+          const targets = game.players.filter(pl => pl.id !== p.id && pl.relationships.length > 0);
+          if (targets.length === 0) { logMsg('☕ Không có ai còn lá Quan Hệ để trừ.'); break; }
+          const choice = await showModal({
+            em: '☕', title: 'Nghe Nói...', desc: 'Chọn người để trừ 1 lá Quan Hệ.',
+            buttons: targets.map(t => ({ label: `${t.character.em} ${t.name} (🎴${t.relationships.length})`, value: t.id }))
+          });
+          const target = game.players.find(pl => pl.id === choice);
+          const idx = Math.floor(Math.random() * target.relationships.length);
+          const removed = target.relationships.splice(idx, 1)[0];
+          logMsg(`☕ ${p.name} "nghe nói" khiến ${target.name} mất lá "${removed.title}".`);
+          break;
+        }
+      }
+      renderAll();
+    }
+
+    /* ============================================================
+       SHOP
+    ============================================================ */
+    async function openShop() {
+      const p = game.players[game.current];
+      const discount = p.relationships.find(c => c.id === 'khachhang');
+      const items = SHOP_ITEMS.filter(it => !p.items.some(owned => owned.id === it.id));
+      if (items.length === 0) { await alertModal('🛍️', 'Cửa Hàng', 'Bạn đã sở hữu hết đồ trong cửa hàng rồi!'); return; }
+      const choice = await showModal({
+        em: '🛍️', title: 'Cửa Hàng Khu Phố',
+        desc: `Bạn đang có ${p.money} Tiền.${discount ? ' (Có thể dùng "Khách Hàng Thân Thiết" để giảm 1 Tiền)' : ''}`,
+        buttons: [...items.map(it => ({ label: `${it.em} ${it.name} — ${it.price} Tiền (${it.desc})`, value: it.id })),
+        { label: 'Đóng cửa hàng', value: null }]
+      });
+      if (!choice) return;
+      const item = SHOP_ITEMS.find(it => it.id === choice);
+      let price = item.price;
+      if (discount && p.money < price) {
+        // offer discount if short on cash
+      }
+      if (discount && price > 0) {
+        const useDiscount = await showModal({
+          em: '🎫', title: 'Dùng "Khách Hàng Thân Thiết"?', desc: `Giảm giá món này 1 Tiền (còn ${price - 1} Tiền).`,
+          buttons: [{ label: 'Dùng giảm giá', value: true, primary: true }, { label: 'Không dùng', value: false }]
+        });
+        if (useDiscount) { price = Math.max(0, price - 1); p.relationships.splice(p.relationships.indexOf(discount), 1); }
+      }
+      if (p.money < price) { await alertModal('😅', 'Không đủ tiền', `Bạn cần ${price} Tiền nhưng chỉ có ${p.money}.`); return; }
+      p.money -= price; p.items.push(item);
+      if (item.id === 'phone') drawRelationship(p, 1);
+      logMsg(`🛍️ ${p.name} mua ${item.em} ${item.name} với giá ${price} Tiền.`);
+      await enforceHandLimit(p);
+      renderAll();
+    }
+
+    /* ============================================================
+       END TURN / TURN INCOME (passives at turn start)
+    ============================================================ */
+    function applyTurnStartPassives(p) {
+      if (p.character.id === 'cattoc') { p.uytin += 1; logMsg(`💈 Nội tại: ${p.name} +1 Uy Tín đầu lượt.`); }
+      if (p.character.id === 'trada') { drawRelationship(p, 1); logMsg(`☕ Nội tại: ${p.name} +1 lá Quan Hệ đầu lượt.`); }
+      p.items.forEach(it => { if (it.income) { p.money += it.income; logMsg(`${it.em} ${it.name} mang lại +${it.income} Tiền.`); } });
+    }
+
+    async function endTurn() {
+      if (game.gameOver) { showEndScreen(); return; }
+      const p = game.players[game.current];
+      await enforceHandLimit(p);
+
+      if (p.extraTurn) {
+        p.extraTurn = false;
+        p.skillUsed = false;
+        p.turnIncome = 0;
+        game.turnPhase = 'roll';
+        logMsg(`📦 ${p.name} được đi thêm lượt nhờ "Đơn Hỏa Tốc"!`);
+        document.getElementById('die').textContent = '🎲';
+        renderAll();
+        return;
+      }
+
+      // move to next player
+      let next = (game.current + 1) % game.players.length;
+      let safety = 0;
+      while (game.players[next].skipNextTurn && safety < game.players.length + 1) {
+        logMsg(`😴 ${game.players[next].name} đang mất lượt, bị bỏ qua.`);
+        game.players[next].skipNextTurn = false;
+        next = (next + 1) % game.players.length;
+        safety++;
+      }
+      game.current = next;
+      const np = game.players[game.current];
+      np.skillUsed = false;
+      np.turnIncome = 0;
+      game.turnPhase = 'roll';
+      document.getElementById('die').textContent = '🎲';
+      applyTurnStartPassives(np);
+      renderAll();
+
+      if (game.gameOver) { showEndScreen(); }
+    }
+
+    /* ============================================================
+       END SCREEN
+    ============================================================ */
+    async function showEndScreen() {
+      document.getElementById('rollBtn').disabled = true;
+      document.getElementById('endTurnBtn').disabled = true;
+      document.getElementById('skillBtn').disabled = true;
+      const scored = game.players.map(p => ({
+        p, score: p.money * 1 + p.uytin * 3 + p.relationships.length * 2
+      })).sort((a, b) => b.score - a.score);
+      const winner = scored[0].p;
+      const board = scored.map((s, i) => `${i + 1}. ${s.p.character.em} ${s.p.name} — ${s.score} điểm (💰${s.p.money} ⭐${s.p.uytin} 🎴${s.p.relationships.length})`).join('<br>');
+      await showModal({
+        em: '🏆', title: 'HUYỀN THOẠI PHỐ HÓNG',
+        desc: `<b>${winner.name}</b> (${winner.character.name}) chiến thắng!<br><br>${board}`,
+        quote: '"Ai cũng biết mặt, ai cũng nợ một lần."',
+        buttons: [{ label: '🔁 Chơi lại từ đầu', value: true, primary: true }]
+      });
+      location.reload();
+    }
+  </script>
+</body>
+
+</html>
