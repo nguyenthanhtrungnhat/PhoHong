@@ -670,6 +670,24 @@
       gap: 8px;
     }
 
+    .modal.wide {
+      max-width: 620px;
+      text-align: left;
+    }
+
+    .modal.wide h3 {
+      text-align: left;
+    }
+
+    .modal .scroll-body {
+      max-height: 55vh;
+      overflow-y: auto;
+      text-align: left;
+      font-size: 12.5px;
+      line-height: 1.5;
+      padding-right: 6px;
+    }
+
     .footer-credit {
       text-align: center;
       color: rgba(243, 231, 198, 0.4);
@@ -735,6 +753,7 @@
               <div class="die" id="die">🎲</div>
               <button class="roll-btn" id="rollBtn">Tung xúc xắc</button>
             </div>
+            <button class="btn ghost" id="mapDetailBtn" style="margin-top:8px;">📖 Xem chi tiết tất cả các ô</button>
           </div>
         </div>
       </div>
@@ -782,84 +801,90 @@
     const CHARACTERS = [
       {
         id: 'xeom', em: '🛵', name: 'Anh Xe Ôm',
-        passive: '+1 Tiền mỗi ô di chuyển.',
-        skillName: '"Anh biết đường tắt."', skillDesc: 'Di chuyển thêm 3 ô.',
+        passive: '+1 Tiền mỗi 3 ô di chuyển.',
+        skillName: '"Anh biết đường tắt."', skillDesc: 'Di chuyển thêm 3 ô. (Dùng được mỗi lượt.)',
         quote: '"Anh chạy đường này 20 năm rồi."'
       },
       {
         id: 'thoho', em: '👷', name: 'Thợ Hồ',
-        passive: 'Nhận thêm tiền khi dừng ở Công Trình.',
-        skillName: '"Tăng Ca Chủ Nhật"', skillDesc: 'Nhân đôi thu nhập đã kiếm được trong lượt này.',
+        passive: 'Nhận thêm 2 Tiền ở Công Trình.',
+        skillName: '"Tăng Ca Chủ Nhật"', skillDesc: 'Nhân đôi thu nhập đã kiếm được trong lượt này. Chỉ dùng được 1 lần mỗi vòng chơi.',
         quote: '"Kèo này thơm."'
       },
       {
         id: 'cattoc', em: '💈', name: 'Thợ Cắt Tóc',
         passive: 'Mỗi lượt của mình, nhận 1 Uy Tín.',
-        skillName: '"Fade Hàn Quốc"', skillDesc: 'Lấy 1 Uy Tín từ một người chơi khác.',
+        skillName: '"Fade Hàn Quốc"', skillDesc: 'Lấy 1 Uy Tín từ một người chơi khác. Chỉ dùng được 1 lần mỗi vòng chơi.',
         quote: '"Đầu này đảm bảo cua đổ."'
       },
       {
         id: 'chutro', em: '🏠', name: 'Bà Chủ Trọ',
         passive: 'Nhận 2 Tiền khi người khác dừng ở Khu Trọ.',
-        skillName: '"Tiền Điện Tháng Này Hơi Cao"', skillDesc: 'Thu 2 Tiền từ tất cả người chơi khác.',
+        skillName: '"Tiền Điện Tháng Này Hơi Cao"', skillDesc: 'Thu 2 Tiền từ tất cả người chơi khác. Chỉ dùng được 1 lần mỗi vòng chơi.',
         quote: '"Cô tính đúng đồng hồ nha con."'
       },
       {
         id: 'shipper', em: '📦', name: 'Anh Shipper',
         passive: 'Nhận 2 Tiền nếu di chuyển từ 4 ô trở lên.',
-        skillName: '"Đơn Hỏa Tốc"', skillDesc: 'Được đi thêm 1 lượt ngay sau lượt này.',
+        skillName: '"Đơn Hỏa Tốc"', skillDesc: 'Được đi thêm 1 lượt ngay sau lượt này. Chỉ dùng được 1 lần mỗi vòng chơi.',
         quote: '"Ra lấy hàng giúp em."'
       },
       {
         id: 'trada', em: '☕', name: 'Cô Trà Đá',
-        passive: 'Mỗi lượt của mình, nhận 1 lá Quan Hệ.',
-        skillName: '"Nghe Nói..."', skillDesc: 'Trừ 1 lá Quan Hệ của người chơi khác.',
+        passive: 'Nhận tiền khi người khác vào Quán Nước; mỗi lượt nhận 1 lá Quan Hệ.',
+        skillName: '"Nghe Nói..."', skillDesc: 'Trừ 1 lá Quan Hệ của người chơi khác. Chỉ dùng được 1 lần mỗi vòng chơi.',
         quote: '"Tui không nhiều chuyện đâu nha."'
       }
     ];
 
     // tile categories: start, penalty, minigame, drama, social, rest, service, market, work
+    const CAT_LABEL = {
+      start: 'Khởi Đầu', penalty: 'Rủi Ro / Phạt', minigame: 'Mini-game',
+      drama: 'Ô Drama', social: 'Giao Lưu', rest: 'Nghỉ Ngơi',
+      service: 'Dịch Vụ', market: 'Buôn Bán', work: 'Công Việc'
+    };
+    const DRAMA_DESC = 'Rút 1 lá Drama và thực hiện ngay lập tức — trừ khi bạn đang miễn nhiễm Drama (vừa nghỉ ở Khu Trọ / Quán Cơm) hoặc dùng lá Quan Hệ "Né Drama" để hủy.';
     const TILES = [
-      { name: 'KHỞI ĐẦU', em: '🏠', cat: 'start' },
-      { name: 'BỆNH VIỆN', em: '🏥', cat: 'penalty' },
-      { name: 'CÔNG AN PHƯỜNG', em: '🚓', cat: 'penalty' },
-      { name: 'Karaoke', em: '🎤', cat: 'minigame' },
-      { name: 'Tin Đồn', em: '📢', cat: 'drama' },
-      { name: 'Quán Nhậu', em: '🍻', cat: 'social' },
-      { name: 'Khu Trọ', em: '🛏️', cat: 'rest' },
-      { name: 'Chuyện Không Hay', em: '😮', cat: 'drama' },
-      { name: 'Tiệm Tóc', em: '💈', cat: 'service' },
-      { name: 'Quán Nước', em: '🍵', cat: 'social' },
-      { name: 'Góc Hóng Chuyện', em: '☕', cat: 'drama' },
-      { name: 'Chợ', em: '🛒', cat: 'market' },
-      { name: 'Bến Xe', em: '🚌', cat: 'service' },
-      { name: 'Khu Vực Nguy Hiểm', em: '🚧', cat: 'drama' },
-      { name: 'Công Trình', em: '🏗️', cat: 'work' },
-      { name: 'Quán Cơm Bình Dân', em: '🍚', cat: 'service' },
-      { name: 'Drama Khu Phố', em: '🐕', cat: 'drama' },
-      { name: 'Tiệm Tạp Hóa', em: '🏪', cat: 'penalty' },
-      { name: 'Chợ', em: '🛒', cat: 'market' },
-      { name: 'Có Chuyện Rồi', em: '👀', cat: 'drama' },
-      { name: 'Phố Đi Bộ', em: '🚸', cat: 'penalty' },
-      { name: 'Khu Trọ', em: '🛏️', cat: 'rest' },
-      { name: 'Tới Công Chuyện', em: '😮', cat: 'drama' },
-      { name: 'Quán Nhậu', em: '🍻', cat: 'social' },
-      { name: 'Tiệm Sửa Xe', em: '🔧', cat: 'penalty' },
-      { name: 'Biến Cố', em: '⚠️', cat: 'drama' },
-      { name: 'Quán Net', em: '🖥️', cat: 'service' },
-      { name: 'Chợ', em: '🛒', cat: 'market' },
-      { name: 'Ghế Đá Công Viên', em: '🪑', cat: 'drama' },
-      { name: 'Nhà Văn Hóa', em: '🏛️', cat: 'social' },
-      { name: 'Chợ', em: '🛒', cat: 'market' },
-      { name: 'Quán Nước', em: '🍵', cat: 'social' },
-      { name: 'Tiệm Tóc', em: '💈', cat: 'service' },
-      { name: 'Hóng Hớt', em: '👂', cat: 'drama' },
-      { name: 'Công Trình', em: '🏗️', cat: 'work' },
-      { name: 'Chợ Đêm', em: '🌙', cat: 'minigame' },
-      { name: 'Tin Đồn Đầu Hẻm', em: '📢', cat: 'drama' },
-      { name: 'Bến Xe', em: '🚌', cat: 'service' },
-      { name: 'Karaoke', em: '🎤', cat: 'minigame' },
-      { name: 'UBND PHƯỜNG', em: '🏢', cat: 'penalty' }
+      { name: 'KHỞI ĐẦU', em: '🏠', cat: 'start', desc: 'Đi ngang qua hoặc dừng lại đều nhận 3 Tiền lương. "Lương vừa về."' },
+      { name: 'BỆNH VIỆN', em: '🏥', cat: 'penalty', desc: 'Trả 3 Tiền viện phí. Nếu không đủ tiền, mất lượt kế tiếp thay vì trả. Có thể hủy bằng lá "Ông Chú Trong Phường".' },
+      { name: 'CÔNG AN PHƯỜNG', em: '🚓', cat: 'penalty', desc: 'Bị mời hợp tác: mất 3 Uy Tín và 5 Tiền. Có thể hủy bằng lá "Ông Chú Trong Phường".' },
+      { name: 'Karaoke', em: '🎤', cat: 'minigame', desc: 'Tung xúc xắc phụ: ra 1-3 thì mất 2 Tiền tiền phòng; ra 4-6 thì nhận 1 lá Quan Hệ.' },
+      { name: 'Tin Đồn', em: '📢', cat: 'drama', desc: DRAMA_DESC },
+      { name: 'Quán Nhậu', em: '🍻', cat: 'social', desc: 'Tăng hai ba dô — nhận ngay 1 lá Quan Hệ.' },
+      { name: 'Khu Trọ', em: '🛏️', cat: 'rest', desc: 'Nghỉ ngơi: miễn nhiễm Drama ở lượt Drama kế tiếp. Nếu có Bà Chủ Trọ trong ván, bà ấy thu 2 Tiền tiền phòng từ bạn.' },
+      { name: 'Chuyện Không Hay', em: '😮', cat: 'drama', desc: DRAMA_DESC },
+      { name: 'Tiệm Tóc', em: '💈', cat: 'service', desc: 'Nếu bạn là Thợ Cắt Tóc: tự cắt cho khách, +2 Tiền. Nếu không: trả 1 Tiền cho Thợ Cắt Tóc (nếu nhân vật đó có trong ván).' },
+      { name: 'Quán Nước', em: '🍵', cat: 'social', desc: 'Ngồi 5 phút biết hết chuyện trong xóm — nhận 1 lá Quan Hệ. Nếu không phải Cô Trà Đá, trả thêm 1 Tiền cho Cô Trà Đá (nếu nhân vật đó có trong ván).' },
+      { name: 'Góc Hóng Chuyện', em: '☕', cat: 'drama', desc: DRAMA_DESC },
+      { name: 'Chợ', em: '🛒', cat: 'market', desc: 'Bán đắt như tôm tươi — nhận 2 Tiền.' },
+      { name: 'Bến Xe', em: '🚌', cat: 'service', desc: 'Nếu bạn là Xe Ôm: đón khách ngay tại bến, +3 Tiền. Nếu không: trả 1 Tiền phí gửi xe.' },
+      { name: 'Khu Vực Nguy Hiểm', em: '🚧', cat: 'drama', desc: DRAMA_DESC },
+      { name: 'Công Trình', em: '🏗️', cat: 'work', desc: 'Nếu bạn là Thợ Hồ: tăng ca, +3 Tiền. Nếu không: phụ hồ vặt, +1 Tiền.' },
+      { name: 'Quán Cơm Bình Dân', em: '🍚', cat: 'service', desc: 'Ăn cơm hết 2 Tiền, đổi lại được miễn nhiễm Drama ở lượt Drama kế tiếp.' },
+      { name: 'Drama Khu Phố', em: '🐕', cat: 'drama', desc: DRAMA_DESC },
+      { name: 'Tiệm Tạp Hóa', em: '🏪', cat: 'penalty', desc: 'Mua đồ vặt tốn 1 Tiền. Nếu không đủ tiền, mất mặt: -2 Uy Tín thay vào đó.' },
+      { name: 'Chợ', em: '🛒', cat: 'market', desc: 'Bán đắt như tôm tươi — nhận 2 Tiền.' },
+      { name: 'Có Chuyện Rồi', em: '👀', cat: 'drama', desc: DRAMA_DESC },
+      { name: 'Phố Đi Bộ', em: '🚸', cat: 'penalty', desc: 'Cấm phương tiện: nếu bạn đang sở hữu xe (Xe Wave Cũ / Xe Ba Gác), bị phạt 3 Tiền. Không có xe thì vô sự.' },
+      { name: 'Khu Trọ', em: '🛏️', cat: 'rest', desc: 'Nghỉ ngơi: miễn nhiễm Drama ở lượt Drama kế tiếp. Nếu có Bà Chủ Trọ trong ván, bà ấy thu 2 Tiền tiền phòng từ bạn.' },
+      { name: 'Tới Công Chuyện', em: '😮', cat: 'drama', desc: DRAMA_DESC },
+      { name: 'Quán Nhậu', em: '🍻', cat: 'social', desc: 'Tăng hai ba dô — nhận ngay 1 lá Quan Hệ.' },
+      { name: 'Tiệm Sửa Xe', em: '🔧', cat: 'penalty', desc: 'Nếu bạn đang có xe, tốn 1 Tiền sửa xe. Không có xe thì khỏi sửa.' },
+      { name: 'Biến Cố', em: '⚠️', cat: 'drama', desc: DRAMA_DESC },
+      { name: 'Quán Net', em: '🖥️', cat: 'service', desc: 'Clip highlight lên xu hướng — nhận 2 Uy Tín.' },
+      { name: 'Chợ', em: '🛒', cat: 'market', desc: 'Bán đắt như tôm tươi — nhận 2 Tiền.' },
+      { name: 'Ghế Đá Công Viên', em: '🪑', cat: 'drama', desc: DRAMA_DESC },
+      { name: 'Nhà Văn Hóa', em: '🏛️', cat: 'social', desc: 'Đi họp cũng có cái lợi — nhận 1 lá Quan Hệ.' },
+      { name: 'Chợ', em: '🛒', cat: 'market', desc: 'Bán đắt như tôm tươi — nhận 2 Tiền.' },
+      { name: 'Quán Nước', em: '🍵', cat: 'social', desc: 'Ngồi 5 phút biết hết chuyện trong xóm — nhận 1 lá Quan Hệ. Nếu không phải Cô Trà Đá, trả thêm 1 Tiền cho Cô Trà Đá (nếu nhân vật đó có trong ván).' },
+      { name: 'Tiệm Tóc', em: '💈', cat: 'service', desc: 'Nếu bạn là Thợ Cắt Tóc: tự cắt cho khách, +2 Tiền. Nếu không: trả 1 Tiền cho Thợ Cắt Tóc (nếu nhân vật đó có trong ván).' },
+      { name: 'Hóng Hớt', em: '👂', cat: 'drama', desc: DRAMA_DESC },
+      { name: 'Công Trình', em: '🏗️', cat: 'work', desc: 'Nếu bạn là Thợ Hồ: tăng ca, +3 Tiền. Nếu không: phụ hồ vặt, +1 Tiền.' },
+      { name: 'Chợ Đêm', em: '🌙', cat: 'minigame', desc: 'Tung xúc xắc phụ: ra 1-2 thì ế, không bán được gì; ra 3-4 thì +2 Tiền; ra 5-6 thì +4 Tiền.' },
+      { name: 'Tin Đồn Đầu Hẻm', em: '📢', cat: 'drama', desc: DRAMA_DESC },
+      { name: 'Bến Xe', em: '🚌', cat: 'service', desc: 'Nếu bạn là Xe Ôm: đón khách ngay tại bến, +3 Tiền. Nếu không: trả 1 Tiền phí gửi xe.' },
+      { name: 'Karaoke', em: '🎤', cat: 'minigame', desc: 'Tung xúc xắc phụ: ra 1-3 thì mất 2 Tiền tiền phòng; ra 4-6 thì nhận 1 lá Quan Hệ.' },
+      { name: 'UBND PHƯỜNG', em: '🏢', cat: 'penalty', desc: 'Chọn: mất lượt kế tiếp, hoặc trả 3 Tiền để xong việc ngay. Có thể dùng lá "Chạy Giấy Tờ" để thoát miễn phí.' }
     ];
 
     const DRAMA_CARDS = [
@@ -1044,7 +1069,7 @@
           id: i, name, character, color: PLAYER_COLORS[i % PLAYER_COLORS.length],
           money: 10, uytin: 0, relationships: [], items: [],
           position: 0, laps: 0, skillUsed: false, immuneNextDrama: false,
-          skipNextTurn: false, extraTurn: false, turnIncome: 0
+          skipNextTurn: false, extraTurn: false, turnIncome: 0, skillUsedThisLap: false
         });
         // starting 1 relationship card
         players[i].relationships.push(randomRelationshipCard());
@@ -1095,9 +1120,20 @@
         el.className = 'tile cat-' + t.cat;
         el.style.gridColumn = pos.col;
         el.style.gridRow = pos.row;
+        el.style.cursor = 'pointer';
+        el.title = `${t.name} — ${t.desc}`;
         el.id = 'tile' + i;
         el.innerHTML = `<div class="em">${t.em}</div><div class="nm">${t.name}</div>`;
+        el.onclick = () => showTileDetail(t, i);
         board.appendChild(el);
+      });
+    }
+    function showTileDetail(t, i) {
+      showModal({
+        em: t.em,
+        title: `${t.name} <span style="font-size:11px;font-weight:400;opacity:.6;">(ô ${i})</span>`,
+        desc: `<b>${CAT_LABEL[t.cat] || ''}</b><br>${t.desc}`,
+        buttons: [{ label: 'Đóng', value: true, primary: true }]
       });
     }
     function renderTokens() {
@@ -1126,7 +1162,7 @@
       rollBtn.disabled = game.turnPhase !== 'roll';
       endBtn.disabled = game.turnPhase !== 'end';
       document.getElementById('skillBtn').disabled =
-        game.turnPhase !== 'post';
+        game.turnPhase !== 'end' || game.players[game.current].skillUsed;
     }
     function renderTurnBanner() {
       const p = game.players[game.current];
@@ -1142,7 +1178,7 @@
         row.className = 'p-row' + (idx === game.current ? ' current' : '');
         row.innerHTML = `
       <div class="p-dot" style="background:${p.color}"></div>
-      <div>${p.character.em} ${p.name}${p.skipNextTurn ? ' 😴' : ''}${p.immuneNextDrama ? ' 🛡️' : ''}
+      <div>${p.character.em} ${p.name}${p.skipNextTurn ? ' 😴' : ''}${p.immuneNextDrama ? ' 🛡️' : ''}${(p.character.id !== 'xeom' && p.skillUsedThisLap) ? ' 🔒' : ''}
         <div class="p-stats">
           <span>💰${p.money}</span><span>⭐${p.uytin}</span><span>🎴${p.relationships.length}</span>
         </div>
@@ -1182,6 +1218,7 @@
       return new Promise(resolve => {
         const overlay = document.getElementById('overlay');
         const modal = document.getElementById('modal');
+        modal.classList.remove('wide');
         modal.innerHTML = `
       ${em ? `<span class="em-big">${em}</span>` : ''}
       <h3>${title}</h3>
@@ -1254,6 +1291,33 @@
     document.getElementById('endTurnBtn').onclick = endTurn;
     document.getElementById('skillBtn').onclick = useSkill;
     document.getElementById('shopBtn').onclick = openShop;
+    document.getElementById('mapDetailBtn').onclick = showFullMapDetail;
+
+    function showFullMapDetail() {
+      const overlay = document.getElementById('overlay');
+      const modal = document.getElementById('modal');
+      modal.classList.add('wide');
+      const rows = TILES.map((t, i) => `
+        <div style="display:flex;gap:10px;padding:7px 2px;border-bottom:1px dashed var(--line);">
+          <div style="font-size:19px;line-height:1;">${t.em}</div>
+          <div>
+            <b>${i}. ${t.name}</b>
+            <span style="font-size:10px;opacity:.55;text-transform:uppercase;margin-left:6px;">${CAT_LABEL[t.cat] || ''}</span>
+            <br><span style="opacity:.8;">${t.desc}</span>
+          </div>
+        </div>`).join('');
+      modal.innerHTML = `
+        <h3>📖 Toàn bộ ${TILES.length} ô trên bản đồ Phố Hóng</h3>
+        <div class="scroll-body">${rows}</div>
+        <div class="btns" style="margin-top:12px;">
+          <button class="btn primary" id="closeMapDetail">Đóng</button>
+        </div>`;
+      overlay.classList.add('show');
+      document.getElementById('closeMapDetail').onclick = () => {
+        overlay.classList.remove('show');
+        modal.classList.remove('wide');
+      };
+    }
 
     game_setInitialPhase();
     function game_setInitialPhase() { /* placeholder, actual set after startGame */ }
@@ -1289,16 +1353,18 @@
     function faceEm(n) { return ['', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][n]; }
 
     async function moveToken(p, steps, diceRoll) {
-      const start = p.position;
-      const raw = start + steps;
-      const wraps = Math.floor(raw / 40);
-      if (wraps > 0) {
-        p.money += 3 * wraps; p.turnIncome += 3 * wraps; p.laps += wraps;
-        logMsg(`🏠 ${p.name} đi qua Khởi Đầu, nhận ${3 * wraps} Tiền. (Vòng ${p.laps})`);
+      for (let s = 0; s < steps; s++) {
+        p.position = (p.position + 1) % 40;
+        if (p.position === 0) {
+          p.money += 3; p.turnIncome += 3; p.laps += 1;
+          p.skillUsedThisLap = false;
+          logMsg(`🏠 ${p.name} đi qua Khởi Đầu, nhận 3 Tiền. (Vòng ${p.laps})`);
+          pulseTile(0);
+        }
+        renderTokens();
+        await new Promise(r => setTimeout(r, 150));
       }
-      p.position = raw % 40;
-      renderTokens();
-      await new Promise(r => setTimeout(r, 350));
+      bounceToken(p);
 
       // character passives tied to movement
       if (p.character.id === 'xeom') {
@@ -1317,6 +1383,24 @@
       }
 
       checkLapEnd(p);
+    }
+
+    function pulseTile(i) {
+      const tile = document.getElementById('tile' + i);
+      if (!tile) return;
+      tile.classList.remove('tile-pulse');
+      void tile.offsetWidth; // restart animation
+      tile.classList.add('tile-pulse');
+      setTimeout(() => tile.classList.remove('tile-pulse'), 500);
+    }
+    function bounceToken(p) {
+      const tile = document.getElementById('tile' + p.position);
+      if (!tile) return;
+      const tok = [...tile.querySelectorAll('.token')].find(t => t.dataset.pid == p.id);
+      if (!tok) return;
+      tok.classList.remove('token-bounce');
+      void tok.offsetWidth;
+      tok.classList.add('token-bounce');
     }
 
     function checkLapEnd(p) {
@@ -1405,7 +1489,7 @@
         }
         case 'Quán Nước': {
           const icetea = findByCharacter('trada');
-          if (icetea && icetea.id !== p.id) { pay(p, 3); icetea.money += 3; logMsg(`💈 ${p.name} trả 3 Tiền nước cho ${icetea.name}.`); }
+          if (icetea && icetea.id !== p.id) { pay(p, 1); icetea.money += 1; logMsg(`🍵 ${p.name} trả 1 Tiền nước cho ${icetea.name}.`); }
 
           drawRelationship(p, 1);
           logMsg(`🍵 "Ngồi 5 phút biết hết chuyện trong xóm." +1 lá Quan Hệ.`);
@@ -1497,6 +1581,10 @@
     async function useSkill() {
       const p = game.players[game.current];
       if (p.skillUsed) { logMsg(`✋ ${p.name} đã dùng kỹ năng trong lượt này rồi.`); return; }
+      if (p.character.id !== 'xeom' && p.skillUsedThisLap) {
+        logMsg(`🔒 ${p.name} đã dùng kỹ năng "${p.character.skillName}" trong vòng này rồi, phải đợi sang vòng sau.`);
+        return;
+      }
       const ok = await showModal({
         em: p.character.em, title: p.character.skillName, desc: p.character.skillDesc,
         quote: 'Xác nhận sử dụng kỹ năng nhân vật?',
@@ -1504,6 +1592,7 @@
       });
       if (!ok) return;
       p.skillUsed = true;
+      if (p.character.id !== 'xeom') p.skillUsedThisLap = true;
 
       switch (p.character.id) {
         case 'xeom': {
@@ -1515,7 +1604,7 @@
         case 'thoho': {
           const bonus = p.turnIncome;
           p.money += bonus;
-          logMsg(`👷 ${p.name} dùng "Tăng Ca Chủ Nhật": nhân đôi thu nhập lượt này, +${bonus} Tiền thêm.`);
+          logMsg(`👷 ${p.name} dùng "Tăng Ca Chủ Nhật": nhân đôi thu nhập lượt này, +${bonus} Tiền thêm. (Không dùng lại được đến vòng sau.)`);
           break;
         }
         case 'cattoc': {
@@ -1527,19 +1616,19 @@
           });
           const target = game.players.find(pl => pl.id === choice);
           target.uytin -= 1; p.uytin += 1;
-          logMsg(`💈 ${p.name} "fade" lấy 1 Uy Tín từ ${target.name}.`);
+          logMsg(`💈 ${p.name} "fade" lấy 1 Uy Tín từ ${target.name}. (Không dùng lại được đến vòng sau.)`);
           break;
         }
         case 'chutro': {
           let total = 0;
           game.players.forEach(pl => { if (pl.id !== p.id) { const amt = Math.min(2, pl.money); pl.money -= amt; total += amt; } });
           p.money += total;
-          logMsg(`🏠 ${p.name} dùng "Tiền Điện Tháng Này Hơi Cao": thu tổng ${total} Tiền từ mọi người.`);
+          logMsg(`🏠 ${p.name} dùng "Tiền Điện Tháng Này Hơi Cao": thu tổng ${total} Tiền từ mọi người. (Không dùng lại được đến vòng sau.)`);
           break;
         }
         case 'shipper': {
           p.extraTurn = true;
-          logMsg(`📦 ${p.name} dùng "Đơn Hỏa Tốc": sẽ được đi thêm 1 lượt!`);
+          logMsg(`📦 ${p.name} dùng "Đơn Hỏa Tốc": sẽ được đi thêm 1 lượt! (Không dùng lại được đến vòng sau.)`);
           break;
         }
         case 'trada': {
@@ -1552,7 +1641,7 @@
           const target = game.players.find(pl => pl.id === choice);
           const idx = Math.floor(Math.random() * target.relationships.length);
           const removed = target.relationships.splice(idx, 1)[0];
-          logMsg(`☕ ${p.name} "nghe nói" khiến ${target.name} mất lá "${removed.title}".`);
+          logMsg(`☕ ${p.name} "nghe nói" khiến ${target.name} mất lá "${removed.title}". (Không dùng lại được đến vòng sau.)`);
           break;
         }
       }
