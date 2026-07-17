@@ -802,7 +802,7 @@
       {
         id: 'xeom', em: '🛵', name: 'Anh Xe Ôm',
         passive: '+1 Tiền mỗi 3 ô di chuyển.',
-        skillName: '"Anh biết đường tắt."', skillDesc: 'Di chuyển thêm 3 ô. (Dùng được mỗi lượt.)',
+        skillName: '"Anh biết đường tắt."', skillDesc: 'Di chuyển thêm 3 ô. Chỉ dùng được 1 lần mỗi vòng chơi.',
         quote: '"Anh chạy đường này 20 năm rồi."'
       },
       {
@@ -1581,7 +1581,7 @@
     async function useSkill() {
       const p = game.players[game.current];
       if (p.skillUsed) { logMsg(`✋ ${p.name} đã dùng kỹ năng trong lượt này rồi.`); return; }
-      if (p.character.id !== 'xeom' && p.skillUsedThisLap) {
+      if (p.skillUsedThisLap) {
         logMsg(`🔒 ${p.name} đã dùng kỹ năng "${p.character.skillName}" trong vòng này rồi, phải đợi sang vòng sau.`);
         return;
       }
@@ -1592,8 +1592,8 @@
       });
       if (!ok) return;
       p.skillUsed = true;
-      //if (p.character.id !== 'xeom')
-        p.skillUsedThisLap = true;
+
+      p.skillUsedThisLap = true;
 
       switch (p.character.id) {
         case 'xeom': {
