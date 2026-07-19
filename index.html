@@ -445,8 +445,162 @@
       border-radius: 50%;
       border: 2px solid var(--ink);
       bottom: 2px;
-      transition: all .4s ease;
+      transition: left .16s ease, bottom .16s ease;
       box-shadow: 0 2px 0 rgba(0, 0, 0, .3);
+    }
+
+    @keyframes tokenBounce {
+      0% { transform: scale(1); }
+      35% { transform: scale(1.6); }
+      100% { transform: scale(1); }
+    }
+    .token-bounce {
+      animation: tokenBounce .45s ease;
+    }
+
+    @keyframes tilePulse {
+      0% { box-shadow: 0 0 0 0 rgba(240, 174, 5, 0.9); }
+      100% { box-shadow: 0 0 0 14px rgba(240, 174, 5, 0); }
+    }
+    .tile-pulse {
+      animation: tilePulse .5s ease-out;
+    }
+
+    /* ---------- drama screen overlay effects ---------- */
+    @keyframes screenFlash {
+      0% { opacity: 0; }
+      12% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    .drama-flash {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(218, 75, 43, 0.6), rgba(176, 58, 32, 0.85));
+      animation: screenFlash .7s ease-out forwards;
+    }
+
+    @keyframes newsSlide {
+      0% { transform: translateY(-120%); }
+      15% { transform: translateY(0%); }
+      82% { transform: translateY(0%); }
+      100% { transform: translateY(-120%); }
+    }
+    .news-banner {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 71;
+      background: var(--chili);
+      color: #fff;
+      text-align: center;
+      font-weight: 800;
+      letter-spacing: .5px;
+      padding: 14px;
+      font-size: clamp(15px, 3vw, 20px);
+      box-shadow: 0 4px 0 var(--chili-dark);
+      animation: newsSlide 1.2s cubic-bezier(.34, 1.4, .4, 1) forwards;
+      pointer-events: none;
+    }
+
+    @keyframes screenShake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+    body.shake {
+      animation: screenShake .4s ease;
+    }
+
+    /* ---------- card draw flip overlay (drama cards) ---------- */
+    .card-draw-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 72;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(20, 14, 8, 0.4);
+      pointer-events: none;
+    }
+    .draw-card {
+      width: 150px;
+      height: 200px;
+      perspective: 900px;
+    }
+    .draw-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform .6s;
+      transform-style: preserve-3d;
+    }
+    .draw-card-inner.flipped {
+      transform: rotateY(180deg);
+    }
+    .draw-card-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border-radius: 14px;
+      border: 3px solid var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 10px;
+      gap: 6px;
+    }
+    .draw-card-back {
+      background: linear-gradient(135deg, var(--night), var(--night-2));
+      color: var(--turmeric);
+      font-size: 40px;
+    }
+    .draw-card-front {
+      background: var(--paper);
+      transform: rotateY(180deg);
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .draw-card-front .em {
+      font-size: 42px;
+    }
+
+    /* ---------- relationship draw toast ---------- */
+    @keyframes toastPop {
+      0% { transform: scale(.6); opacity: 0; }
+      60% { transform: scale(1.08); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .card-toast {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      z-index: 75;
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 12.5px;
+      box-shadow: var(--shadow);
+      max-width: 240px;
+      transform: translateX(140%);
+      opacity: 0;
+      transition: transform .35s ease, opacity .35s ease;
+    }
+    .card-toast .em {
+      font-size: 22px;
+    }
+    .card-toast.show {
+      transform: translateX(0);
+      opacity: 1;
     }
 
     /* ---------- sidebar ---------- */
@@ -695,6 +849,167 @@
       margin-top: 24px;
     }
 
+    /* ---------- full rules page ---------- */
+    .rules-page {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 26px 30px 34px;
+      display: none;
+    }
+
+    .rules-hero {
+      text-align: center;
+      margin: 6px 0 22px;
+    }
+
+    .rules-hero h1 {
+      font-size: clamp(26px, 5vw, 38px);
+      margin: 0;
+      color: var(--chili);
+    }
+
+    .rules-hero .tagline {
+      font-style: italic;
+      opacity: .7;
+      margin: 4px 0 10px;
+    }
+
+    .rules-hero .version-tag {
+      display: inline-block;
+      background: var(--night);
+      color: var(--turmeric);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      letter-spacing: .5px;
+    }
+
+    .rules-section {
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 1.5px dashed var(--line);
+    }
+
+    .rules-section h2 {
+      font-size: 17px;
+      margin: 0 0 8px;
+    }
+
+    .rules-section p {
+      font-size: 13.5px;
+      line-height: 1.65;
+      margin: 0 0 8px;
+    }
+
+    .rules-list {
+      margin: 0 0 8px;
+      padding-left: 20px;
+      font-size: 13.5px;
+      line-height: 1.7;
+    }
+
+    .score-table {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 10px 0;
+    }
+
+    .score-table div {
+      flex: 1;
+      min-width: 140px;
+      background: rgba(255, 255, 255, 0.5);
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .turn-steps {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    .turn-steps>div {
+      background: rgba(255, 255, 255, 0.5);
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    .turn-steps b {
+      font-size: 13px;
+    }
+
+    .turn-steps p {
+      font-size: 12px;
+      margin: 4px 0 0;
+      opacity: .8;
+    }
+
+    .lore-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      margin-top: 12px;
+    }
+
+    .lore-card {
+      background: rgba(255, 255, 255, 0.5);
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    .lore-card .lc-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .lore-card .lc-head .em {
+      font-size: 22px;
+    }
+
+    .lore-card .lc-quote {
+      font-style: italic;
+      font-size: 12px;
+      color: var(--chili-dark);
+      margin: 6px 0;
+    }
+
+    .lore-card .lc-bio {
+      font-size: 12px;
+      line-height: 1.55;
+      opacity: .85;
+    }
+
+    .lore-card .lc-kit {
+      margin-top: 8px;
+      font-size: 11.5px;
+      line-height: 1.55;
+    }
+
+    .legend-banner {
+      text-align: center;
+      background: var(--turmeric);
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      padding: 10px;
+      font-weight: 800;
+      font-size: 16px;
+      margin: 10px 0 4px;
+    }
+
     ::-webkit-scrollbar {
       width: 8px;
     }
@@ -735,11 +1050,119 @@
             Điểm = Tiền (x1) + Uy Tín (x3) + mỗi lá Quan Hệ còn giữ (x2).</p>
           <p><b>Lượt chơi:</b> Tung xúc xắc → di chuyển → kích hoạt hiệu ứng ô dừng lại → có thể dùng
             Kỹ Năng nhân vật (tối đa 1 lần/lượt) và mua đồ ở Cửa Hàng → kết thúc lượt.</p>
-          <p><b>Ô Drama 📢:</b> rút 1 lá Drama và thực hiện ngay, trừ khi bạn đang <b>miễn nhiễm Drama</b>
-            (nhờ nghỉ ở Khu Trọ / Quán Cơm) hoặc dùng lá Quan Hệ "Né Drama".</p>
+          <p><b>Ô Drama 📢:</b> rút 1 lá Drama và thực hiện ngay. Nếu là tin xấu, có thể bị chặn nhờ
+            <b>miễn nhiễm Drama</b> (nhờ nghỉ ở Khu Trọ / Quán Cơm) hoặc lá Quan Hệ "Né Drama" — còn tin tốt thì
+            luôn nhận, không né được.</p>
           <p><b>Quan Hệ:</b> giữ tối đa 5 lá, thừa phải bỏ bớt. Một số lá dùng 1 lần rồi bỏ.</p>
         </div>
+        <button class="btn ghost" id="openRulesBtn" style="margin-top:10px;">📜 Xem luật chơi đầy đủ</button>
       </div>
+    </div>
+
+    <!-- ===================== FULL RULES PAGE ===================== -->
+    <div class="card rules-page" id="rulesScreen">
+      <button class="btn ghost" id="closeRulesBtn">← Quay lại</button>
+
+      <div class="rules-hero">
+        <h1>📻 PHỐ HÓNG</h1>
+        <p class="tagline">"Tin tức nhanh hơn internet."</p>
+        <span class="version-tag">Luật Chơi · Alpha 1.0</span>
+      </div>
+
+      <section class="rules-section">
+        <h2>🧭 Giới thiệu</h2>
+        <p>Phố Hóng là một board game trào phúng lấy cảm hứng từ cuộc sống thường ngày trong các khu phố Việt Nam.
+          Người chơi vào vai những nhân vật quen thuộc như xe ôm, thợ hồ, cắt tóc, chủ trọ, trà đá và shipper để
+          kiếm tiền, xây dựng uy tín, tạo quan hệ và vượt qua vô số drama của khu phố.</p>
+      </section>
+
+      <section class="rules-section">
+        <h2>🏆 Mục Tiêu Chiến Thắng</h2>
+        <p>Khi một người chơi hoàn thành số vòng quy định (khuyến nghị 3 vòng quanh bản đồ) hoặc khi bộ bài Drama
+          gần hết, ván chơi kết thúc.</p>
+        <div class="score-table">
+          <div><span>💰 1 Tiền</span><b>= 1 điểm</b></div>
+          <div><span>⭐ 1 Uy Tín</span><b>= 3 điểm</b></div>
+          <div><span>🎴 1 lá Quan Hệ</span><b>= 2 điểm</b></div>
+        </div>
+        <p>Người có tổng điểm cao nhất chiến thắng.</p>
+      </section>
+
+      <section class="rules-section">
+        <h2>🎒 Thành Phần</h2>
+        <ul class="rules-list">
+          <li>1 Bản đồ Phố Hóng</li>
+          <li>6 Thẻ Nhân Vật</li>
+          <li>Bộ bài Drama</li>
+          <li>Bộ bài Quan Hệ</li>
+          <li>Xúc xắc 6 mặt</li>
+          <li>Token người chơi</li>
+          <li>Giấy ghi điểm hoặc tiền giấy</li>
+        </ul>
+        <p style="font-size:12px;opacity:.65;">(Phiên bản HTML này đã số hóa toàn bộ thành phần trên — chỉ cần mở
+          trình duyệt là chơi được, không cần in ấn gì thêm.)</p>
+      </section>
+
+      <section class="rules-section">
+        <h2>🧩 Chuẩn Bị</h2>
+        <ol class="rules-list">
+          <li>Mỗi người chọn ngẫu nhiên hoặc tự chọn 1 Nhân Vật.</li>
+          <li>Đặt tất cả người chơi tại ô Khởi Đầu.</li>
+          <li>Mỗi người nhận: 10 Tiền, 0 Uy Tín, 1 lá Quan Hệ.</li>
+          <li>Xáo bộ bài Drama và Quan Hệ thành hai chồng riêng.</li>
+          <li>Người trẻ nhất đi trước.</li>
+        </ol>
+      </section>
+
+      <section class="rules-section">
+        <h2>🔄 Trình Tự Lượt Chơi</h2>
+        <div class="turn-steps">
+          <div><b>Bước 1 — Tung xúc xắc</b><p>Tung 1 xúc xắc và di chuyển theo số ô tương ứng.</p></div>
+          <div><b>Bước 2 — Kích hoạt ô</b><p>Thực hiện hiệu ứng của ô vừa dừng lại.</p></div>
+          <div><b>Bước 3 — Sử dụng kỹ năng</b><p>Có thể dùng kỹ năng nhân vật nếu đáp ứng điều kiện.</p></div>
+          <div><b>Bước 4 — Kết thúc lượt</b><p>Chuyển lượt cho người chơi bên trái.</p></div>
+        </div>
+      </section>
+
+      <section class="rules-section">
+        <h2>📊 Các Chỉ Số Trong Game</h2>
+        <p><b>💰 Tiền</b> — Dùng để tính điểm và thanh toán các hiệu ứng.</p>
+        <p><b>⭐ Uy Tín</b> — Thể hiện danh tiếng trong khu phố.<br>
+          Thường được nhận từ: thành tích, sự kiện tích cực.<br>
+          Thường bị mất bởi: Drama, tin đồn, sự cố.</p>
+        <p><b>🎴 Quan Hệ</b> — Là các lá bài hỗ trợ đặc biệt. Giữ tối đa 5 lá; vượt quá phải bỏ bớt xuống 5.</p>
+      </section>
+
+      <section class="rules-section">
+        <h2>📢 Ô Drama</h2>
+        <p>Khi dừng lại ở ô Drama: rút 1 lá Drama và thực hiện ngay. Nếu là tin xấu, "miễn nhiễm Drama" hoặc lá
+          Quan Hệ "Né Drama" có thể chặn hiệu ứng đó. Nếu là tin tốt, hiệu ứng luôn xảy ra — không có cách nào
+          từ chối một tin vui.</p>
+      </section>
+
+      <section class="rules-section">
+        <h2>🎴 Sử Dụng Lá Quan Hệ</h2>
+        <p>Lá Quan Hệ có thể được sử dụng bất cứ lúc nào, trừ khi trên lá có ghi điều kiện khác.
+          Sau khi sử dụng, đặt vào chồng bài bỏ.</p>
+      </section>
+
+      <section class="rules-section">
+        <h2>🎭 Nhân Vật</h2>
+        <p>Mỗi nhân vật có <b>Nội Tại</b> (luôn hoạt động) và <b>Kỹ Năng</b> (chỉ dùng được 1 lần mỗi vòng chơi
+          quanh bản đồ, và tối đa 1 lần trong mỗi lượt của bản thân).</p>
+        <div class="lore-grid" id="loreGrid"></div>
+      </section>
+
+      <section class="rules-section" style="border-bottom:none;">
+        <h2>🏁 Kết Thúc Trò Chơi</h2>
+        <p>Trò chơi kết thúc khi: có người hoàn thành số vòng quy định, hoặc bộ bài Drama không đủ để rút.</p>
+        <p>Tất cả người chơi cộng điểm: Tiền còn lại, Uy Tín, Lá Quan Hệ còn giữ. Người có tổng điểm cao nhất
+          trở thành:</p>
+        <div class="legend-banner">🏆 HUYỀN THOẠI PHỐ HÓNG</div>
+        <p style="text-align:center;font-style:italic;opacity:.75;">"Ai cũng biết mặt, ai cũng nợ một lần."</p>
+      </section>
+
+      <button class="start-btn" id="closeRulesBtnBottom">← Quay lại</button>
     </div>
 
     <!-- ===================== GAME ===================== -->
@@ -771,6 +1194,7 @@
           <div class="action-row">
             <button class="btn primary" id="skillBtn">✨ Dùng Kỹ Năng</button>
             <button class="btn" id="shopBtn">🛍️ Cửa Hàng</button>
+            <button class="btn ghost" id="openRulesBtnGame">📖 Luật chơi</button>
             <button class="btn danger" id="endTurnBtn" disabled>➡️ Kết thúc lượt</button>
           </div>
         </div>
@@ -843,11 +1267,9 @@
       drama: 'Ô Drama', social: 'Giao Lưu', rest: 'Nghỉ Ngơi',
       service: 'Dịch Vụ', market: 'Buôn Bán', work: 'Công Việc'
     };
-    const DRAMA_DESC = 'Rút 1 lá Drama và thực hiện ngay lập tức — trừ khi bạn đang miễn nhiễm Drama (vừa nghỉ ở Khu Trọ / Quán Cơm) hoặc dùng lá Quan Hệ "Né Drama" để hủy.';
+    const DRAMA_DESC = 'Rút 1 lá Drama và thực hiện ngay lập tức. Nếu là tin xấu, có thể bị chặn nhờ miễn nhiễm Drama (vừa nghỉ ở Khu Trọ / Quán Cơm) hoặc lá Quan Hệ "Né Drama". Tin tốt thì luôn nhận, không cách nào né được.';
     const TILES = [
       { name: 'KHỞI ĐẦU', em: '🏠', cat: 'start', desc: 'Đi ngang qua hoặc dừng lại đều nhận 3 Tiền lương. "Lương vừa về."' },
-      { name: 'BỆNH VIỆN', em: '🏥', cat: 'penalty', desc: 'Trả 3 Tiền viện phí. Nếu không đủ tiền, mất lượt kế tiếp thay vì trả. Có thể hủy bằng lá "Ông Chú Trong Phường".' },
-      { name: 'CÔNG AN PHƯỜNG', em: '🚓', cat: 'penalty', desc: 'Bị mời hợp tác: mất 3 Uy Tín và 5 Tiền. Có thể hủy bằng lá "Ông Chú Trong Phường".' },
       { name: 'Karaoke', em: '🎤', cat: 'minigame', desc: 'Tung xúc xắc phụ: ra 1-3 thì mất 2 Tiền tiền phòng; ra 4-6 thì nhận 1 lá Quan Hệ.' },
       { name: 'Tin Đồn', em: '📢', cat: 'drama', desc: DRAMA_DESC },
       { name: 'Quán Nhậu', em: '🍻', cat: 'social', desc: 'Tăng hai ba dô — nhận ngay 1 lá Quan Hệ.' },
@@ -857,6 +1279,7 @@
       { name: 'Quán Nước', em: '🍵', cat: 'social', desc: 'Ngồi 5 phút biết hết chuyện trong xóm — nhận 1 lá Quan Hệ. Nếu không phải Cô Trà Đá, trả thêm 1 Tiền cho Cô Trà Đá (nếu nhân vật đó có trong ván).' },
       { name: 'Góc Hóng Chuyện', em: '☕', cat: 'drama', desc: DRAMA_DESC },
       { name: 'Chợ', em: '🛒', cat: 'market', desc: 'Bán đắt như tôm tươi — nhận 2 Tiền.' },
+      { name: 'UBND PHƯỜNG', em: '🏢', cat: 'penalty', desc: 'Chọn: mất lượt kế tiếp, hoặc trả 3 Tiền để xong việc ngay. Có thể dùng lá "Chạy Giấy Tờ" để thoát miễn phí.' },
       { name: 'Bến Xe', em: '🚌', cat: 'service', desc: 'Nếu bạn là Xe Ôm: đón khách ngay tại bến, +3 Tiền. Nếu không: trả 1 Tiền phí gửi xe.' },
       { name: 'Khu Vực Nguy Hiểm', em: '🚧', cat: 'drama', desc: DRAMA_DESC },
       { name: 'Công Trình', em: '🏗️', cat: 'work', desc: 'Nếu bạn là Thợ Hồ: tăng ca, +3 Tiền. Nếu không: phụ hồ vặt, +1 Tiền.' },
@@ -866,6 +1289,7 @@
       { name: 'Chợ', em: '🛒', cat: 'market', desc: 'Bán đắt như tôm tươi — nhận 2 Tiền.' },
       { name: 'Có Chuyện Rồi', em: '👀', cat: 'drama', desc: DRAMA_DESC },
       { name: 'Phố Đi Bộ', em: '🚸', cat: 'penalty', desc: 'Cấm phương tiện: nếu bạn đang sở hữu xe (Xe Wave Cũ / Xe Ba Gác), bị phạt 3 Tiền. Không có xe thì vô sự.' },
+      { name: 'CÔNG AN PHƯỜNG', em: '🚓', cat: 'penalty', desc: 'Bị mời hợp tác: mất 3 Uy Tín và 5 Tiền. Có thể hủy bằng lá "Ông Chú Trong Phường".' },
       { name: 'Khu Trọ', em: '🛏️', cat: 'rest', desc: 'Nghỉ ngơi: miễn nhiễm Drama ở lượt Drama kế tiếp. Nếu có Bà Chủ Trọ trong ván, bà ấy thu 2 Tiền tiền phòng từ bạn.' },
       { name: 'Tới Công Chuyện', em: '😮', cat: 'drama', desc: DRAMA_DESC },
       { name: 'Quán Nhậu', em: '🍻', cat: 'social', desc: 'Tăng hai ba dô — nhận ngay 1 lá Quan Hệ.' },
@@ -875,6 +1299,7 @@
       { name: 'Chợ', em: '🛒', cat: 'market', desc: 'Bán đắt như tôm tươi — nhận 2 Tiền.' },
       { name: 'Ghế Đá Công Viên', em: '🪑', cat: 'drama', desc: DRAMA_DESC },
       { name: 'Nhà Văn Hóa', em: '🏛️', cat: 'social', desc: 'Đi họp cũng có cái lợi — nhận 1 lá Quan Hệ.' },
+      { name: 'BỆNH VIỆN', em: '🏥', cat: 'penalty', desc: 'Trả 3 Tiền viện phí. Nếu không đủ tiền, mất lượt kế tiếp thay vì trả. Có thể hủy bằng lá "Ông Chú Trong Phường".' },
       { name: 'Chợ', em: '🛒', cat: 'market', desc: 'Bán đắt như tôm tươi — nhận 2 Tiền.' },
       { name: 'Quán Nước', em: '🍵', cat: 'social', desc: 'Ngồi 5 phút biết hết chuyện trong xóm — nhận 1 lá Quan Hệ. Nếu không phải Cô Trà Đá, trả thêm 1 Tiền cho Cô Trà Đá (nếu nhân vật đó có trong ván).' },
       { name: 'Tiệm Tóc', em: '💈', cat: 'service', desc: 'Nếu bạn là Thợ Cắt Tóc: tự cắt cho khách, +2 Tiền. Nếu không: trả 1 Tiền cho Thợ Cắt Tóc (nếu nhân vật đó có trong ván).' },
@@ -884,7 +1309,6 @@
       { name: 'Tin Đồn Đầu Hẻm', em: '📢', cat: 'drama', desc: DRAMA_DESC },
       { name: 'Bến Xe', em: '🚌', cat: 'service', desc: 'Nếu bạn là Xe Ôm: đón khách ngay tại bến, +3 Tiền. Nếu không: trả 1 Tiền phí gửi xe.' },
       { name: 'Karaoke', em: '🎤', cat: 'minigame', desc: 'Tung xúc xắc phụ: ra 1-3 thì mất 2 Tiền tiền phòng; ra 4-6 thì nhận 1 lá Quan Hệ.' },
-      { name: 'UBND PHƯỜNG', em: '🏢', cat: 'penalty', desc: 'Chọn: mất lượt kế tiếp, hoặc trả 3 Tiền để xong việc ngay. Có thể dùng lá "Chạy Giấy Tờ" để thoát miễn phí.' }
     ];
 
     const DRAMA_CARDS = [
@@ -898,6 +1322,7 @@
       },
       {
         em: '📱', title: 'LÊN XU HƯỚNG', desc: 'Viral trên internet.', quote: '"Không hiểu sao tự nhiên nổi."',
+        positive: true,
         fx: (p) => { gainUyTin(p, 3); return `${p.name} viral mạng xã hội, +3 Uy Tín.`; }
       },
       {
@@ -906,6 +1331,7 @@
       },
       {
         em: '📺', title: 'LÊN THỜI SỰ', desc: 'Được đài phỏng vấn.', quote: '"Nổi tiếng bất đắc dĩ."',
+        positive: true,
         fx: (p) => { gainUyTin(p, 5); return `${p.name} lên thời sự, +5 Uy Tín.`; }
       },
       {
@@ -918,6 +1344,7 @@
       },
       {
         em: '🏆', title: 'KHU PHỐ KHEN THƯỞNG', desc: 'Được tổ trưởng khen.', quote: '"Gia đình văn hóa."',
+        positive: true,
         fx: (p) => { gainUyTin(p, 2); return `${p.name} được khen, +2 Uy Tín.`; }
       },
       {
@@ -938,10 +1365,12 @@
       },
       {
         em: '💸', title: 'ĐƯỢC ĐỀN BÙ GIẢI TỎA', desc: 'Dô mánh.', quote: '"Tự nhiên giàu."',
+        positive: true,
         fx: (p) => { p.money += 15; return `${p.name} trúng đền bù giải tỏa! +15 Tiền.`; }
       },
       {
         em: '🏘️', title: 'TRÚNG QUY HOẠCH', desc: 'Dô mánh.', quote: '"Đất này có tương lai."',
+        positive: true,
         fx: (p) => { p.money += 10; return `${p.name} trúng quy hoạch! +10 Tiền.`; }
       }
     ];
@@ -1051,6 +1480,56 @@
 
     document.getElementById('startBtn').onclick = startGame;
 
+    /* ============================================================
+       FULL RULES PAGE
+    ============================================================ */
+    const CHARACTER_LORE = {
+      xeom: 'Người ta đồn anh biết mọi con hẻm trong thành phố, kể cả những con hẻm chưa mở. Anh chạy xe từ thời xăng còn dưới 20 ngàn một lít. Không ai biết anh thực sự bao nhiêu tuổi, nhưng ai trong xóm cũng từng được anh chỉ cho một "đường tắt" dài hơn đường chính.',
+      thoho: 'Sáng nào anh cũng xuất hiện ở công trình trước cả mặt trời. Anh có thể xây tường, lát gạch, sửa mái và đưa lời khuyên về mọi vấn đề trong cuộc sống dù chẳng ai hỏi. Lạ một điều là công trình nào cũng bảo sắp xong, nhưng chưa ai thấy nó hoàn thành.',
+      cattoc: 'Chủ tiệm tóc nổi tiếng nhất khu phố. Dù khách yêu cầu kiểu gì, kết quả cuối cùng vẫn hơi giống nhau. Theo lời anh kể, một nửa trai đẹp trong xóm đều do anh tạo ra.',
+      chutro: 'Người phụ nữ quyền lực nhất con hẻm. Bà biết ai đi làm ca đêm, ai chưa đóng tiền phòng và ai vừa dẫn người yêu về khu trọ. Dân trọ tin rằng bà còn nắm nhiều thông tin hơn cả tổ trưởng dân phố.',
+      shipper: 'Anh sống bằng pin điện thoại, ứng dụng giao hàng và một niềm tin mãnh liệt rằng đơn tiếp theo sẽ gần. Dù trời mưa hay nắng, anh vẫn xuất hiện đúng lúc người ta cần. Có tin đồn anh thuộc nhiều địa chỉ hơn cả bưu điện.',
+      trada: 'Chiếc "trung tâm dữ liệu" của khu phố. Từ chuyện nhà đầu hẻm đến chuyện chia tay cuối ngõ, cô đều biết trước khi người trong cuộc biết. Người ta đến uống trà đá vì khát, nhưng thường về với nhiều thông tin hơn họ mong muốn.'
+    };
+
+    function renderCharacterLore() {
+      const grid = document.getElementById('loreGrid');
+      if (!grid) return;
+      grid.innerHTML = CHARACTERS.map(c => `
+        <div class="lore-card">
+          <div class="lc-head"><span class="em">${c.em}</span>${c.name}</div>
+          <div class="lc-quote">${c.quote}</div>
+          <div class="lc-bio">${CHARACTER_LORE[c.id] || ''}</div>
+          <div class="lc-kit">
+            <b>Nội tại:</b> ${c.passive}<br>
+            <b>Kỹ năng — ${c.skillName}:</b> ${c.skillDesc}
+          </div>
+        </div>
+      `).join('');
+    }
+    renderCharacterLore();
+
+    let screenBeforeRules = 'setup';
+    function openRulesPage() {
+      screenBeforeRules = document.getElementById('gameScreen').classList.contains('show') ? 'game' : 'setup';
+      document.getElementById('setupScreen').style.display = 'none';
+      document.getElementById('gameScreen').classList.remove('show');
+      document.getElementById('rulesScreen').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function closeRulesPage() {
+      document.getElementById('rulesScreen').style.display = 'none';
+      if (screenBeforeRules === 'game') {
+        document.getElementById('gameScreen').classList.add('show');
+      } else {
+        document.getElementById('setupScreen').style.display = 'block';
+      }
+    }
+    document.getElementById('openRulesBtn').onclick = openRulesPage;
+    document.getElementById('openRulesBtnGame').onclick = openRulesPage;
+    document.getElementById('closeRulesBtn').onclick = closeRulesPage;
+    document.getElementById('closeRulesBtnBottom').onclick = closeRulesPage;
+
     buildSetupControls();
     renderPlayerSetup();
 
@@ -1143,6 +1622,7 @@
         if (!tile) return;
         const tok = document.createElement('div');
         tok.className = 'token';
+        tok.dataset.pid = p.id;
         tok.style.background = p.color;
         tok.style.left = (6 + idx * 15) + 'px';
         tile.appendChild(tok);
@@ -1178,7 +1658,7 @@
         row.className = 'p-row' + (idx === game.current ? ' current' : '');
         row.innerHTML = `
       <div class="p-dot" style="background:${p.color}"></div>
-      <div>${p.character.em} ${p.name}${p.skipNextTurn ? ' 😴' : ''}${p.immuneNextDrama ? ' 🛡️' : ''}${(p.character.id !== 'xeom' && p.skillUsedThisLap) ? ' 🔒' : ''}
+      <div>${p.character.em} ${p.name}${p.skipNextTurn ? ' 😴' : ''}${p.immuneNextDrama ? ' 🛡️' : ''}${p.skillUsedThisLap ? ' 🔒' : ''}
         <div class="p-stats">
           <span>💰${p.money}</span><span>⭐${p.uytin}</span><span>🎴${p.relationships.length}</span>
         </div>
@@ -1247,7 +1727,20 @@
     function pay(p, amt) { p.money = Math.max(0, p.money - amt); }
     function gainUyTin(p, amt) { p.uytin = Math.max(0, p.uytin + amt); }
     function drawRelationship(p, n = 1) {
-      for (let i = 0; i < n; i++) p.relationships.push(randomRelationshipCard());
+      for (let i = 0; i < n; i++) {
+        const card = randomRelationshipCard();
+        p.relationships.push(card);
+        setTimeout(() => flyCardToast(card), i * 260);
+      }
+    }
+    function flyCardToast(card) {
+      const toast = document.createElement('div');
+      toast.className = 'card-toast';
+      toast.innerHTML = `<span class="em">${card.em}</span><span>Nhận lá <b>${card.title}</b></span>`;
+      document.body.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.add('show'));
+      setTimeout(() => toast.classList.remove('show'), 1500);
+      setTimeout(() => toast.remove(), 1900);
     }
     function findByCharacter(id) { return game.players.find(pl => pl.character.id === id); }
     function hasVehicle(p) { return p.items.some(it => it.vehicle); }
@@ -1546,17 +2039,28 @@
     }
 
     async function triggerDrama(p) {
-      if (p.immuneNextDrama) {
-        p.immuneNextDrama = false;
-        logMsg(`🛡️ ${p.name} đang miễn nhiễm Drama, hiệu ứng bị vô hiệu hóa.`);
-        return;
-      }
       if (game.dramaDeck.length === 0) {
         logMsg('📢 Bộ bài Drama đã hết!');
         game.gameOver = true;
         return;
       }
       const card = game.dramaDeck.pop();
+      await playDramaOverlay();
+      await playCardDrawOverlay(card.em, card.title);
+
+      if (card.positive) {
+        // Good news always happens — immunity and "Né Drama" only guard against bad news.
+        await alertModal(card.em, card.title, card.desc, card.quote);
+        const resultMsg = card.fx(p, game);
+        logMsg(`📢 ${resultMsg}`);
+        return;
+      }
+
+      if (p.immuneNextDrama) {
+        p.immuneNextDrama = false;
+        logMsg(`🛡️ ${p.name} đang miễn nhiễm Drama, hiệu ứng "${card.title}" bị vô hiệu hóa.`);
+        return;
+      }
       const nedrama = p.relationships.find(c => c.id === 'nedrama');
       if (nedrama) {
         const use = await showModal({
@@ -1573,6 +2077,43 @@
       await alertModal(card.em, card.title, card.desc, card.quote);
       const resultMsg = card.fx(p, game);
       logMsg(`📢 ${resultMsg}`);
+    }
+
+    function playDramaOverlay() {
+      return new Promise(resolve => {
+        const flash = document.createElement('div');
+        flash.className = 'drama-flash';
+        document.body.appendChild(flash);
+        const banner = document.createElement('div');
+        banner.className = 'news-banner';
+        banner.textContent = '📢 TIN NÓNG KHU PHỐ! 📢';
+        document.body.appendChild(banner);
+        document.body.classList.add('shake');
+        setTimeout(() => document.body.classList.remove('shake'), 400);
+        setTimeout(() => flash.remove(), 750);
+        setTimeout(() => banner.remove(), 1250);
+        setTimeout(resolve, 500);
+      });
+    }
+
+    function playCardDrawOverlay(em, title) {
+      return new Promise(resolve => {
+        const wrap = document.createElement('div');
+        wrap.className = 'card-draw-overlay';
+        wrap.innerHTML = `
+          <div class="draw-card">
+            <div class="draw-card-inner" id="dcInner">
+              <div class="draw-card-face draw-card-back">🎴</div>
+              <div class="draw-card-face draw-card-front">
+                <span class="em">${em}</span><span>${title}</span>
+              </div>
+            </div>
+          </div>`;
+        document.body.appendChild(wrap);
+        const inner = wrap.querySelector('#dcInner');
+        setTimeout(() => inner.classList.add('flipped'), 300);
+        setTimeout(() => { wrap.remove(); resolve(); }, 1100);
+      });
     }
 
     /* ============================================================
@@ -1592,7 +2133,6 @@
       });
       if (!ok) return;
       p.skillUsed = true;
-
       p.skillUsedThisLap = true;
 
       switch (p.character.id) {
